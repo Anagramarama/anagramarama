@@ -20,6 +20,40 @@ Contact Details: colm@coralquest.com
 		 12 Weston Terrace, West Kilbride, KA23 9JX.  Scotland.
 */
 
+
+/***********************************************************
+Contributors
+
+Colm Gallagher  : Concept and initial programming
+Alan Grier      : Graphics
+THomas Plunkett : Audio
+Shard           : BEOS Port and bugfixes
+Adolfo          : Bugfix for Linux Red-Hat version 7.3
+
+************************************************************
+version		who		changes
+-------------------------------------------------------------------
+0.1		Colm		initial Linux & Windows revisions
+
+0.2		Shard		Bugfix: buffer overrun in clearWord
+				function corrupted memory.  Strange
+				thing is it crashed BEOS, but not
+				Linux or Windows - guess they handle
+				memory differently or BEOS is much
+				better at detecting exceptions
+
+0.3		Shard		added BEOS port (new makefile)
+
+0.4		Adolfo		Bugfix: oops!  in the checkGuess
+				function, I tried to initialise
+				test[] using a variable  as if I was
+				using vb6 !  Have changed this to a 
+				static buffer and all is now well.
+
+0.5		Colm		Added keyboard input
+
+***********************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -43,7 +77,6 @@ int startNewGame = 0;
 int solvePuzzle = 0;
 int shuffleRemaining = 0;
 int clearGuess = 0;
-//int winGame = 0;
 
 int gameStart = 0;
 int gameTime = 0;
@@ -73,15 +106,25 @@ struct sprite* scoreSprite = NULL;
 // audio vars
 Uint32 audio_len;
 Uint8 *audio_pos;
-
 struct sound{
 	char* name;
 	Mix_Chunk *audio_chunk;
 	struct sound* next;
 };
-
 struct sound* soundCache = NULL;
-/*******************************************************************************/
+
+
+
+
+/***********************************************************
+synopsis: walk the module level soundCache until the required
+	  name is found.  when found, return the audio data
+	  if name is not found, return NULL instead.
+
+inputs:   name - the unique id string of the required sound
+
+outputs:  returns a chunk of audio or NULL if not found
+***********************************************************/
 Mix_Chunk* getSound(char* name){
 
 struct sound* currentSound = soundCache;
@@ -98,7 +141,19 @@ struct sound* currentSound = soundCache;
 	return NULL;
 }
 
-/*******************************************************************************/
+
+
+
+/***********************************************************
+synopsis: push a sound onto the soundCache
+
+inputs:   soundCache - pointer to the head of the soundCache
+	  name - unique id string for the sound, this is used
+	         to later play the sound
+	  filename - the filename of the WAV file
+
+outputs:  n/a
+***********************************************************/
 void pushSound(struct sound** soundCache, char* name, char* filename){
 
 struct sound* thisSound = NULL;
@@ -114,7 +169,19 @@ struct sound* thisSound = NULL;
 	*soundCache = thisSound;
 }
 
-/*******************************************************************************/
+
+
+
+/***********************************************************
+synopsis: push all the game sounds onto the soundCache
+	  linked list.  Not that soundCache is passed into
+	  pushSound by reference, so that the head pointer
+	  can be updated
+
+inputs:   pointer to the soundCache
+
+outputs:  n/a
+***********************************************************/
 void bufferSounds(struct sound** soundCache){
 
 	pushSound(&(*soundCache),"click-answer", "audio/click-answer.wav");
@@ -129,7 +196,17 @@ void bufferSounds(struct sound** soundCache){
 
 }
 
-/*******************************************************************************/
+
+
+
+/***********************************************************
+synopsis: free all of the data in the audio buffer
+	  the audio buffer is a module variable
+
+inputs:   n/a
+
+outputs:  n/a
+***********************************************************/
 void clearSoundBuffer(){
 
 struct sound* currentSound = soundCache, *previousSound = NULL;
@@ -144,9 +221,19 @@ struct sound* currentSound = soundCache, *previousSound = NULL;
 	}
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: determine the next blank space in a string 
+	  blanks are indicated by pound £ not space
+	  
+inputs:   pointer the string to check
+
+outputs:  returns position of next blank (1 is first character)
+	  or 0 if no blanks found
+***********************************************************/
 int nextBlank(char* string){
-// determine the next blank space in a string - blanks are indicated by pound £ not space
 
 int i;
 int found=0;
@@ -165,9 +252,18 @@ int found=0;
 	}
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: shift a string of characters 1 character to the left
+          truncating the leftmost character
+
+inputs:   pointer to string to shift
+
+outputs:  pointer to the shifted string
+***********************************************************/
 char* shiftLeftKill(char* string){
-// shift a string of characters 1 character to the left
 
 int i;
 char start;
@@ -190,10 +286,19 @@ int len;
 	free(newString);
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: shift a string of characters 1 character to the left
+	  move the first character to the end of the string
+	  so it wraps around
+
+inputs:   pointer to string to shift
+
+outputs:  pointer to the shifted string
+***********************************************************/
 char* shiftLeft(char* string){
-// shift a string of characters 1 character to the left
-// move the first character to the end of the string
 
 int i;
 char start;
@@ -217,11 +322,22 @@ int len;
 	free(newString);
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: Generate all possible combinations of the root word
+	  the initial letter is fixed, so to work out all
+	  anagrams of a word, prefix with space.
+
+inputs:   head - pointer to the answers list
+	  dlbHead - pointer to the dictionary
+	  guess - pointer to the current guess
+	  remain - pointer to the remaining letters
+
+outputs:  all parameters are in/out
+***********************************************************/
 void ag(struct node** head, struct dlb_node* dlbHead, char** guess, char** remain){
-// generate all possible combinations of the root word
-// the initial letter is fixed (hence the space character
-// at the end of the possible list)
 
 char*  newGuess;
 char*  newRemain;
@@ -241,8 +357,6 @@ int    totalLen=0, guessLen=0, remainLen=0, i;
 	newGuess[guessLen] = newRemain[remainLen-1];
 	newGuess[guessLen+1] = '\0';
 	newRemain[remainLen-1] = '\0';
-
-//	printf("%s\n", newGuess);
 
 	if(strlen(newGuess) > 3){
 		if (dlb_lookup(dlbHead,shiftLeftKill(newGuess))){
@@ -265,7 +379,16 @@ int    totalLen=0, guessLen=0, remainLen=0, i;
 	free(newRemain);
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: update all of the answers to "found"
+
+inputs:   head - pointer to the answers linked list
+
+outputs:  n/a
+***********************************************************/
 void solveIt(struct node* head){
 
 struct node* current = head;
@@ -276,7 +399,19 @@ struct node* current = head;
 	}
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: load the named image to position x,y onto the
+	  required surface
+
+inputs:  file - the filename to load (.BMP)
+	 screen - the SDL_Surface to display the image
+	 x,y - the top left postion
+
+outputs:  n/a
+***********************************************************/
 void ShowBMP(char *file, SDL_Surface *screen, int x, int y){
 	SDL_Surface *image;
 	SDL_Rect dest;
@@ -301,74 +436,26 @@ void ShowBMP(char *file, SDL_Surface *screen, int x, int y){
 	SDL_BlitSurface(image, NULL, screen, &dest);
 
 	/* Update the changed portion of the screen */
-	//SDL_UpdateRects(screen, 1, &dest);
 	SDL_FreeSurface(image);
 }
 
-/***********************************************************/
-/*void displayAnswerBoxes(struct node* head, SDL_Surface* screen){
-// for each letter to each answer in the nodelist,
-// display a neat little box to fill in later
 
-struct node* current = head;
-SDL_Rect outerrect, innerrect;
-int i;
 
-char imagePath[] = "images/small-£.bmp";
-int twoOnALine = 0;
 
-	// width and height are always the same
-	outerrect.w = 17;
-	outerrect.h = 17;
-	outerrect.x = 70;
-	outerrect.y = 380;
+/***********************************************************
+synopsis: for each letter to each answer in the nodelist,
+	  display a neat little box.  If the answer has
+	  been found display the letter for each box.
+	  if the answer was guessed (as opposed to set found
+	  by solveIt), display a white background, otherwise
+	  display a blue background.
 
-        while (current != NULL){
+inputs:   head - pointer to the answers linked list
+	  screen - pointer to the SDL_Surface to update
 
-		// update the x for each letter
-		for (i=0;i<current->length;i++){
-			SDL_FillRect(screen, &outerrect,0);
-			innerrect.w = outerrect.w - 2;
-			innerrect.h = outerrect.h - 2;
-			innerrect.x = outerrect.x + 1;
-			innerrect.y = outerrect.y + 1;
-
-			if (current->guessed){
-				SDL_FillRect(screen, &innerrect,SDL_MapRGB(screen->format,255,255,255));
-			}
-			else{
-				SDL_FillRect(screen, &innerrect,SDL_MapRGB(screen->format,217,220,255));
-			}
-
-			if (current->found){
-				imagePath[13] = current->anagram[i];
-				ShowBMP(imagePath, screen,  innerrect.x+2, innerrect.y );
-			}
-
-			outerrect.x += 18;
-		}
-
-		if ( twoOnALine<4 ){
-			// shift x along to show the next word
-			outerrect.x += (8-current->length) * 18;
-			twoOnALine++;
-		}
-		else{
-			// reset the x, ready for the next line
-			outerrect.x = 70;
-			twoOnALine = 0;
-			// update the y for each word
-			outerrect.y += 19;
-		}
-		current=current->next;
-	}
-	SDL_Flip(screen);
-}
-*/
-/***********************************************************/
+outputs:  n/a
+***********************************************************/
 void displayAnswerBoxes(struct node* head, SDL_Surface* screen){
-// for each letter to each answer in the nodelist,
-// display a neat little box to fill in later
 
 struct node* current = head;
 SDL_Rect outerrect, innerrect, letterBankRect;
@@ -377,7 +464,6 @@ int numWords = 0;
 int acrossOffset = 70;
 int numLetters = 0;
 int listLetters = 0;
-//char imagePath[] = "images/small-£.bmp";
 
 	// width and height are always the same
 	outerrect.w = 16;
@@ -416,10 +502,7 @@ int listLetters = 0;
 
 			if (current->found){
 				innerrect.x+=2;
-//				innerrect.y-=1;
 				letterBankRect.x = 10 * ((int)current->anagram[i] - 97);
-				//imagePath[13] = current->anagram[i];
-				//ShowBMP(imagePath, screen,  innerrect.x+2, innerrect.y );
 				SDL_SetColorKey(smallLetterBank, SDL_SRCCOLORKEY, SDL_MapRGB(smallLetterBank->format,255,0,255));
 				SDL_BlitSurface(smallLetterBank, &letterBankRect, screen, &innerrect);
 			}
@@ -445,19 +528,36 @@ int listLetters = 0;
 
 		current=current->next;
 	}
-//	SDL_Flip(screen);
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: walk the linked list of answers checking
+	  for our guess.  If the guess exists, mark it as
+	  found and guessed.
+	  if it's the longest word play the foundbig 
+	  sound otherwise play the got word sound.
+	  If the word has already been found, play the
+	  duplicate sound.
+	  If it cannot be found, play the badword sound
+
+inputs:   answer - the string that we're checking
+	  head - pointer to the linked list of answers
+
+outputs:  n/a
+***********************************************************/
 void checkGuess(char* answer, struct node* head){
 // check the guess against the answers
 struct node* current = head;
 int i, len;
 int foundWord = 0;
+char test[7];
 
 	len = nextBlank(answer) -1;
 	if (len<0) len=7;
-	char test[len];
+//	char test[len];			//bugfix by Adolfo - what was I thinking!  and why does it only fail on RH 7.3??
 	for (i=0; i<len; i++){
 		test[i] = answer[i];
 	}
@@ -505,11 +605,27 @@ int foundWord = 0;
 	}
 }
 
-/***********************************************************/
-int nextBlankPosition(int box, int* index){
-// determine the next blank space in a string - blanks are indicated by pound £ not space
+/***********************************************************
+synopsis: determine the next blank space in a string 
+          blanks are indicated by pound £ not space.
+	  When a blank is found, move the chosen letter
+	  from one box to the other.
+	  i.e. If we're using the ANSWER box,
+	  move the chosen letter from the SHUFFLE box 
+	  to the ANSWER box and move a SPACE back to the
+	  SHUFFLE box. and if we're using the SHUFFLE box
+	  move the chosen letter from ANSWER to SHUFFLE
+	  and move a SPACE into ANSWER.
 
-int i;
+inputs:   box - the ANSWER or SHUFFLE box
+	  *index - pointer to the letter we're interested in
+
+outputs:  retval : the coords of the next blank position
+          *index : pointer to the new position were interested in
+***********************************************************/
+int nextBlankPosition(int box, int* index){
+
+int i=0;
 
 	switch(box){
 		case ANSWER:
@@ -539,7 +655,103 @@ int i;
 
 	return i * (GAME_LETTER_WIDTH+GAME_LETTER_SPACE)+BOX_START_X;
 }
-/***********************************************************/
+
+
+
+
+/***********************************************************
+synopsis: handle the keyboard events
+	  BACKSPACE & ESCAPE - clear letters
+	  RETURN - check guess
+	  SPACE - shuffle
+	  a-z - select the first instance of that letter
+	  	in the shuffle box and move to the answer box
+
+inputs: event - the key that has been pressed
+	node - the top of the answers list
+	letters - the letter sprites
+
+outputs:  n/a
+***********************************************************/
+void handleKeyboardEvent(SDL_Event *event, struct node* head, struct sprite** letters){
+
+struct sprite* current = *letters;
+char keyedLetter;
+
+	keyedLetter = event->key.keysym.sym;
+
+	if (!gamePaused){
+
+		switch(keyedLetter){
+
+			case SDLK_BACKSPACE: case SDLK_ESCAPE:
+				// clear has been pressed
+				clearGuess = 1;
+				break;
+
+			case SDLK_RETURN:
+				//enter has been pressed
+				checkGuess(answer, head);
+				break;
+			case ' ':
+				// shuffle has been pressed
+				shuffleRemaining = 1;
+				Mix_PlayChannel(-1, getSound("shuffle"),0);
+				break;
+			default:
+				// loop round until we find the first instance of the selected letter in SHUFFLE
+				while (current!=NULL&&current->box!=CONTROLS){
+					if (current->box == SHUFFLE){
+						if (current->letter == keyedLetter){
+							current->toX = nextBlankPosition(ANSWER, &current->index);
+							current->toY = ANSWER_BOX_Y;
+							current->box = ANSWER;
+							Mix_PlayChannel(-1, getSound("click-shuffle"), 0);
+							break;  //while
+						}
+					}
+					current=current->next;
+				}
+
+		}
+
+	}
+}
+
+
+
+
+/***********************************************************
+synopsis: checks where the mouse click occurred - if it's in
+	  a defined hotspot then perform the appropriate action
+
+	  Hotspot	        Action
+	  -----------------------------------------------------
+	  A letter		set the new x,y of the letter
+	                        and play the appropriate sound
+
+	  ClearGuess		set the clearGuess flag
+
+	  checkGuess		pass the current answer to the
+	  			checkGuess routine
+
+	  solvePuzzle		set the solvePuzzle flag
+
+	  shuffle		set the shuffle flag and
+	  			play the appropriate sound
+
+	  newGame		set the newGame flag
+
+	  quitGame		set the quitGame flag
+
+inputs:  button - mouse button that has ben clicked
+         x, y - the x,y coords of the mouse
+	 screen - the SDL_Surface to display the image
+	 head - pointer to the top of the answers list
+	 letters - pointer to the letters sprites
+
+outputs:  n/a
+***********************************************************/
 void clickDetect(int button, int x, int y, SDL_Surface *screen, struct node* head, struct sprite** letters){
 
 struct sprite* current = *letters;
@@ -600,7 +812,16 @@ struct sprite* current = *letters;
 	}
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: move all letters from answer to shuffle
+
+inputs:  letters - the letter sprites
+
+outputs:  n/a
+***********************************************************/
 int clearWord(struct sprite** letters){
 
 struct sprite* current = *letters;
@@ -608,7 +829,8 @@ struct sprite* orderedLetters[7];
 int i;
 int count = 0;
 
-	for (i=0;i<=7;i++){
+	//for (i=0;i<=7;i++){		// bug fixed by Shard - killed BEOSr, but not linux or windows!
+	for (i=0;i<7;i++){
 		orderedLetters[i] = NULL;
 	}
 
@@ -623,14 +845,24 @@ int count = 0;
 		current=current->next;
 	}
 
-	for (i=0;i<=7;i++){
+	for (i=0;i<7;i++){
 		if(orderedLetters[i] != NULL)
 			orderedLetters[i]->toX = nextBlankPosition(SHUFFLE, &orderedLetters[i]->index);
 	}
 
 	return count;
 }
-/***********************************************************/
+
+
+
+
+/***********************************************************
+synopsis: display the score graphic
+
+inputs: screen - the SDL_Surface to display the image
+
+outputs: n/a
+***********************************************************/
 void updateScore(SDL_Surface* screen){
 // we'll display the total Score, this is the game score
 
@@ -661,7 +893,17 @@ SDL_Rect fromrect, torect, blankRect;
 		SDL_BlitSurface(numberBank, &fromrect, scoreSprite->sprite, &torect);
 	}
 }
-/***********************************************************/
+
+
+
+
+/***********************************************************
+synopsis: displays the graphical representation of time
+
+inputs: screen - the SDL_Surface to display the image
+
+outputs: n/a
+***********************************************************/
 void updateTime(SDL_Surface* screen){
 
 // the time is x seconds  minus the number of seconds of game time
@@ -715,16 +957,28 @@ SDL_Rect fromrect, torect, blankRect;
 		Mix_PlayChannel(-1, getSound("clock-tick"), 0);
 	}
 }
-/***********************************************************/
+
+
+
+
+/***********************************************************
+synopsis: spin the word file to a random location and then
+	  loop until a 7 or 8 letter word is found
+	  this is quite a weak way to get a random word
+	  considering we've got a nice dbl Dictionary to
+	  hand - but it works for now.
+
+inputs: n/a
+
+outputs: a random word
+***********************************************************/
 char* getRandomWord(){
-// spin the word file to a random location and then
-// loop until a 7 or 8 letter word is found
 
 FILE* wordlist;
 int filelocation;
 int i;
 char* wordFromList = malloc(sizeof(char) * 50);
-int len;
+int len=0;
 int done = 0;
 
 	filelocation = rand()%10000;
@@ -771,12 +1025,19 @@ int done = 0;
 	wordFromList[len+1] = '\0';
 
 	return wordFromList;
-	free(wordFromList);
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: swap 2 characters in a string
+
+inputs: from, to - the characters to swap
+
+outputs: the swapped string
+***********************************************************/
 char* swapChars(int from, int to, char* string){
-// swap 2 characters in a string
 
 char swap;
 
@@ -788,10 +1049,18 @@ char swap;
 
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: working backwards in the string,
+	  find the first non space character
+
+inputs: a string to check
+
+outputs: the position of the character
+***********************************************************/
 int revFirstNonSpace(char* thisWord){
-// working backwards in the string,
-// find the first non space character
 int i;
 
 	for (i = strlen(thisWord) ; i>0; i--){
@@ -803,9 +1072,17 @@ int i;
 	return 0;
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: replace characters randomly
+
+inputs: string to randomise (in/out)
+
+outputs: n/a
+***********************************************************/
 void shuffleWord(char** thisWord){
-// replace characters randomly
 
 int numSwaps;
 int from, to;
@@ -822,27 +1099,20 @@ int len;
 		strcpy(*thisWord, swapChars(from, to, *thisWord));
 	}
 
-	// move all the spaces to the end
-//	strcpy(buffer, *thisWord);
-//	for (i=0;i<strlen(buffer);i++){
-//		if(buffer[i] == SPACE_CHAR){
-//			from = i;
-//			to = revFirstNonSpace(buffer);
-//			if (to == 0) break;	// no spaces
-//			to--;
-//			if (from < to){
-//				letter = buffer[i+1];
-//				buffer[i+1] = buffer[i];
-//				buffer[i] = letter;
-//			}
-//		}
-//	}
-//	strcpy(*thisWord, buffer);
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: returns the index of a specific letter in a string
+
+inputs: string - the string to check
+        letter - the letter to return
+
+outputs: the index of the letter
+***********************************************************/
 int whereinstr(char* string, char letter){
-// returns the index of a specific letter in a string
 int i, len;
 
 	len=strlen(string);
@@ -855,11 +1125,20 @@ int i, len;
 
 	return 0;
 }
-	
-/***********************************************************/
+
+
+
+
+/***********************************************************
+synopsis: same as shuffle word, but also tell the letter 
+	  sprites where to move to
+
+inputs: thisWord - the string to shuffle (in/out)
+        letters - the letter sprites
+
+outputs: n/a
+***********************************************************/
 void shuffleAvailableLetters(char** thisWord, struct sprite** letters){
-// same as shuffle word, but also tell the letter sprites where
-// to move to
 
 struct sprite *thisLetter = *letters;
 int from, to;
@@ -909,26 +1188,19 @@ int numSwaps;
 	free(shuffleChars);
 	free(shufflePos);
 }
-/***********************************************************/
-/*void* updateClock(void *arg){
 
-int timeNow;
-	while((gameTime < AVAILABLE_TIME) && !stopTheClock){
-		timeNow = time(0) - gameStart;
-		if (timeNow!=gameTime){
-			gameTime = timeNow;
-			updateTimeDisplay = 1;		
-			//sleep(1);
-		}
-	}
-	stopTheClock = 1;
-	solvePuzzle = 1;
-	return NULL;
-}
-*/
-/********************************************************************/
+
+
+
+/***********************************************************
+synopsis: build letter string into linked list of letter graphics
+
+inputs: letters - letter sprites head node (in/out)
+	screen - the SDL_Surface to display the image
+
+outputs: n/a
+***********************************************************/
 void buildLetters(struct sprite** letters, SDL_Surface* screen){
-// build letter string into linked list of letter graphics
 
 struct sprite *thisLetter = NULL, *previousLetter = NULL;
 int i;
@@ -976,6 +1248,7 @@ int index = 0;
 			SDL_BlitSurface(letterBank, &blankRect, thisLetter->replace, NULL);
 			thisLetter->x = rand()%799;//i * (GAME_LETTER_WIDTH + GAME_LETTER_SPACE) + BOX_START_X;
 			thisLetter->y = rand()%599;//SHUFFLE_BOX_Y;
+			thisLetter->letter = shuffle[i];
 			thisLetter->h = thisLetter->sprite->h;
 			thisLetter->w = thisLetter->sprite->w;
 			thisLetter->toX = i * (GAME_LETTER_WIDTH + GAME_LETTER_SPACE) + BOX_START_X;
@@ -998,10 +1271,20 @@ int index = 0;
 	}
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: add the clock to the sprites
+	  keep a module reference to it for quick and easy update
+	  this sets the clock to a fixed 5:00 start
+
+inputs: letters - letter sprites head node (in/out)
+	screen - the SDL_Surface to display the image
+
+outputs: n/a
+***********************************************************/
 void addClock(struct sprite** letters, SDL_Surface* screen){
-// add the clock to the sprites
-// keep a module reference to it for quick and easy update
 
 struct sprite *thisLetter = NULL, *previousLetter = NULL, *current = *letters;
 int i;
@@ -1093,10 +1376,19 @@ int index = 0;
 	clockSprite = thisLetter;
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: add the Score to the sprites
+          keep a module reference to it for quick and easy update
+
+inputs: letters - letter sprites head node (in/out)
+	screen - the SDL_Surface to display the image
+
+outputs: n/a
+***********************************************************/
 void addScore(struct sprite** letters, SDL_Surface* screen){
-// add the Score to the sprites
-// keep a module reference to it for quick and easy update
 
 struct sprite *thisLetter = NULL, *previousLetter = NULL, *current = *letters;
 SDL_Rect fromrect, torect, blankRect;
@@ -1167,12 +1459,28 @@ int i;
 	previousLetter->next = thisLetter;
 	scoreSprite = thisLetter;
 }
-/***********************************************************/
+
+
+
+
+/***********************************************************
+synopsis: do all of the initialisation for a new game:
+          build the screen
+	  get a random word and generate anagrams
+	  (must get less than 66 anagrams to display on screen)
+	  initialise all the game control flags
+
+inputs: head - first node in the answers list (in/out)
+        dblHead - first node in the dictionary list
+	screen - the SDL_Surface to display the image
+	letters - first node in the letter sprites (in/out)
+
+outputs: n/a
+***********************************************************/
 void newGame(struct node** head, struct dlb_node* dlbHead, SDL_Surface* screen, struct sprite** letters){
 
 char* guess;
 char* remain;
-//pthread_t clock;
 int happy = 0;   // we don't want any more than ones with 66 answers - that's all we can show...
 int i;
 
@@ -1213,13 +1521,11 @@ int i;
 
 	remain[7] = '\0';
 
-//	printf("%s,%i\n", remain, bigWordLen);
 	remain[bigWordLen]='\0';
 
 	shuffleWord(&remain);
 	strcpy(shuffle, remain);
 
-//	printf("shuffle:%s\n", shuffle);
 	free(guess);
 	free(remain);
 
@@ -1244,10 +1550,42 @@ int i;
 	gameTime = 0;
 	stopTheClock = 0;
 
-	// create the clock loop on a new thread
-	//pthread_create(&clock, NULL, updateClock, NULL);
 }
-/***********************************************************/
+
+
+
+
+/***********************************************************
+synopsis: a big while loop that runs the full length of the
+	  game, checks the game events and responds
+	  accordingly
+
+	  event		action
+	  -------------------------------------------------
+	  winGame	stop the clock and solve puzzle
+	  timeRemaining update the clock tick
+	  timeUp	stop the clock and solve puzzle
+	  solvePuzzle	trigger solve puzzle and stop clock
+	  updateAnswers trigger update answers
+	  startNew      trigger start new
+	  updateScore	trigger update score
+	  shuffle	trigger shuffle
+	  clear		trigger clear answer
+	  quit		end loop
+	  poll events   check for keyboard/mouse and quit
+
+	  finally, move the sprites -this is always called
+	  so the sprites are always considered to be moving
+	  no "move sprites" event exists - sprites x&y just
+	  needs to be updated and they will always be moved
+
+inputs: head - first node in the answers list (in/out)
+        dblHead - first node in the dictionary list
+	screen - the SDL_Surface to display the image
+	letters - first node in the letter sprites (in/out)
+
+outputs: n/a
+***********************************************************/
 void gameLoop(struct node** head, struct dlb_node* dlbHead, SDL_Surface* screen, struct sprite** letters){
 
 int done=0;
@@ -1351,19 +1689,33 @@ int timeNow;
 		{
 			switch (event.type) {
 				case SDL_MOUSEBUTTONDOWN:
-//			printf("shuffle: %s\n", shuffle);
-//			printf("guess:   %s\n", answer);
 					clickDetect(event.button.button, event.button.x, event.button.y, screen, *head, &(*letters));
 					break;
-				case SDL_QUIT:
+
+				case SDL_KEYUP:
+					handleKeyboardEvent(&event, *head, &(*letters));
+				         break;
+                                case SDL_QUIT:
 					done=1;
 			}
-		}
+                }
 		moveSprites(&screen, &(*letters), letterSpeed);
-	}
+        }
 }
 
-/***********************************************************/
+
+
+
+/***********************************************************
+synopsis: initialise graphics and sound, build the dictionary
+          cache the images and start the game loop
+	  when the game is done tidy up
+
+inputs: argc - argument count
+        argv - arguments
+
+outputs: retval  0 = success   1 = failure
+***********************************************************/
 int main(int argc, char *argv[]){
 
 struct node* head = NULL;
@@ -1403,9 +1755,6 @@ struct sprite* letters = NULL;
 	}
 
 	bufferSounds(&soundCache);
-
-	// create the audio handler on a new thread
-	//pthread_create(&audio, NULL, handleSounds, NULL);
 
 	// create dictionary
 	createDLBTree(&dlbHead);

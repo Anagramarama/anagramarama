@@ -32,6 +32,7 @@ Contact Details: colm@coralquest.com
 struct sprite{
 	SDL_Surface* sprite;
 	SDL_Surface* replace;
+	char letter;
 	int x,y,w,h;
 	int toX, toY;
 	struct sprite* next;

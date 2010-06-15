@@ -1,8 +1,6 @@
-CFLAGS=-Wall `sdl-config --libs --cflags` -lSDL_mixer
-CFLAGS2=-Wall
-CC=cc
-
-LIBS=
+LFLAGS=-Wall -funroll-loops -fomit-frame-pointer -pipe -O9
+CFLAGS=-Wall `sdl-config --cflags --libs` -funroll-loops -fomit-frame-pointer -pipe -O9 -lSDL_mixer
+CC=gcc
 
 C_FILES=src/dlb.c src/linked.c src/sprite.c src/ag.c
 OBJ_FILES=src/dlb.o src/linked.o src/sprite.o src/ag.o
@@ -14,13 +12,16 @@ ag: $(OBJ_FILES)
 	$(CC) $(CFLAGS) -o $(OUT_FILE) $(OBJ_FILES)
 
 src/dlb.o: src/dlb.c
-	$(CC) $(CFLAGS2) -c -o $@ $^
+	$(CC) $(LFLAGS) -c -o $@ $^
 
 src/linked.o: src/linked.c
-	$(CC) $(CFLAGS2) -c -o $@ $^
+	$(CC) $(LFLAGS) -c -o $@ $^
 	
 src/sprite.o: src/sprite.c
-	$(CC) $(CFLAGS2) -c -o $@ $^
+	$(CC) $(LFLAGS) -c -o $@ $^
 
 src/ag.o: src/ag.c
-	$(CC) $(CFLAGS2) -c -o $@ $^
+	$(CC) $(LFLAGS) -c -o $@ $^
+
+clean:
+	rm -f src/*.o
