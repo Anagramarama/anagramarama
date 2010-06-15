@@ -1,0 +1,28 @@
+SDL_FLAGS = -Wall -O2 -I/usr/local/include -Dmain=SDL_main -I/usr/include/mingw -DWIN32 -Uunix -mno-cygwin -DHAVE_OPENGL
+SDL_LIBS = -L/usr/local/lib -lmingw32 -lSDLmain -lSDL -mwindows -mno-cygwin -lSDL_mixer
+
+CFLAGS2=-Wall -O2 -I. -I/usr/local/include -Dmain=SDL_main -I/usr/include/mingw -DWIN32 -Uunix -mno-cygwin -DHAVE_OPENGL -c
+CC=gcc
+
+LIBS=
+
+C_FILES=src/dlb.c src/linked.c src/sprite.c src/ag.c
+OBJ_FILES=src/dlb.o src/linked.o src/sprite.o src/ag.o
+OUT_FILE=ag
+
+all:ag
+
+ag: $(OBJ_FILES)
+	$(CC) $(SDL_FLAGS) -o $(OUT_FILE) $(OBJ_FILES) $(SDL_LIBS)
+
+src/dlb.o: src/dlb.c
+	$(CC) $(CFLAGS2) -c -o $@ $^
+
+src/linked.o: src/linked.c
+	$(CC) $(CFLAGS2) -c -o $@ $^
+	
+src/sprite.o: src/sprite.c
+	$(CC) $(CFLAGS) -c -o $@ $^
+
+src/ag.o: src/ag.c
+	$(CC) $(CFLAGS2) -c -o $@ $^
