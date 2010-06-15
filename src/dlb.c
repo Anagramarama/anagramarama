@@ -45,7 +45,7 @@ void dlb_push(struct dlb_node** dlbHead, char* thisWord){
 // add a new word to the dictionary
 struct dlb_node* current = *dlbHead;
 struct dlb_node* previous = NULL;
-int i=0;
+size_t i=0;
 char letter;
 int child = 0;
 int sibling = 0;
@@ -119,7 +119,7 @@ int dlb_lookup(struct dlb_node* dlbHead, char* thisWord){
 
 struct dlb_node* current = dlbHead;
 struct dlb_node* previous = NULL;
-int i=0;
+size_t i=0;
 char letter;
 int retval = 0;
 

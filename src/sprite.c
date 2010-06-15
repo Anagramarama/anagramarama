@@ -70,6 +70,24 @@ SDL_Rect rect;
 }
 
 /********************************************************************/
+static int
+isSpriteMoving(struct sprite *p)
+{
+    /* returns true if this sprite needs to move */
+	return (p->y != p->toY) ||  (p->x != p->toX);
+}
+int
+anySpritesMoving(struct sprite **letters)
+{
+    struct sprite *current;
+    for (current = *letters; current != NULL; current = current->next) {
+        if (isSpriteMoving(current))
+            return 1;
+    }
+    return 0;
+}
+
+/********************************************************************/
 void moveSprite(SDL_Surface** screen, struct sprite** movie, int letterSpeed){
 
 int i;

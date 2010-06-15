@@ -67,6 +67,10 @@ version		who		changes
 #include "sprite.h"
 #include "ag.h"
 
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
+
 //module level variables for game control
 char shuffle[]  = "£££££££";
 char answer[]   = "£££££££";
@@ -341,7 +345,7 @@ void ag(struct node** head, struct dlb_node* dlbHead, char** guess, char** remai
 
 char*  newGuess;
 char*  newRemain;
-int    totalLen=0, guessLen=0, remainLen=0, i;
+int    totalLen=0, guessLen=0, remainLen=0;
 
 	// allocate space for our working variables
 	guessLen = strlen(*guess);
@@ -365,6 +369,7 @@ int    totalLen=0, guessLen=0, remainLen=0, i;
 	}
 
 	if (strlen(newRemain)){
+        size_t i;
 		ag(&(*head), dlbHead, &newGuess, &newRemain);
 
 		for (i=totalLen-1;i>0;i--){
@@ -867,7 +872,7 @@ void updateScore(SDL_Surface* screen){
 // we'll display the total Score, this is the game score
 
 char buffer [256];
-int i;
+size_t i;
 SDL_Rect fromrect, torect, blankRect;
 
 	blankRect.x = SCORE_WIDTH * 11;
@@ -1176,8 +1181,8 @@ int numSwaps;
 
 	while(thisLetter != NULL){
 		if (thisLetter->box == SHUFFLE){
-			thisLetter->toX = (whereinstr(shufflePos, thisLetter->index+1) * (GAME_LETTER_WIDTH + GAME_LETTER_SPACE)) + BOX_START_X;
-			thisLetter->index = whereinstr(shufflePos, thisLetter->index+1);
+			thisLetter->toX = (whereinstr(shufflePos, (char)(thisLetter->index+1)) * (GAME_LETTER_WIDTH + GAME_LETTER_SPACE)) + BOX_START_X;
+			thisLetter->index = whereinstr(shufflePos, (char)(thisLetter->index+1));
 		}
 
 		thisLetter = thisLetter->next;
@@ -1487,7 +1492,7 @@ int i;
 	// show background
 	ShowBMP("images/background.bmp",screen, 0,0);
 
-	destroyLetters(&(*letters));
+	destroyLetters(letters);
 
 	guess = malloc(sizeof(char)*50);
 	remain = malloc(sizeof(char)*50);
@@ -1552,8 +1557,17 @@ int i;
 
 }
 
-
-
+static Uint32
+TimerCallback(Uint32 interval, void *param)
+{
+    SDL_UserEvent evt;
+    evt.type = SDL_USEREVENT;
+    evt.code = 0;
+    evt.data1 = 0;
+    evt.data2 = 0;
+    SDL_PushEvent((SDL_Event *)&evt);
+    return 0;
+}
 
 /***********************************************************
 synopsis: a big while loop that runs the full length of the
@@ -1591,7 +1605,10 @@ void gameLoop(struct node** head, struct dlb_node* dlbHead, SDL_Surface* screen,
 int done=0;
 SDL_Event event;
 int timeNow;
+SDL_TimerID timer;
+int timer_delay = 20;
 
+    timer = SDL_AddTimer(timer_delay, TimerCallback, NULL);
 	// main game loop
 	while (!done){
 
@@ -1669,13 +1686,11 @@ int timeNow;
 			//displayLetters(screen);
 
 			shuffleRemaining = 0;
-
-
 		}
 
 		if (clearGuess){
 			// clear the guess;
-			if (clearWord(&(*letters)) > 0)
+			if (clearWord(letters) > 0)
 				Mix_PlayChannel(-1, getSound("clear"),0);
 
 			clearGuess = 0;
@@ -1685,22 +1700,25 @@ int timeNow;
 			done=1;
 		}
 
-		while (SDL_PollEvent(&event))
+		while (SDL_WaitEvent(&event))
 		{
-			switch (event.type) {
-				case SDL_MOUSEBUTTONDOWN:
-					clickDetect(event.button.button, event.button.x, event.button.y, screen, *head, &(*letters));
-					break;
-
-				case SDL_KEYUP:
-					handleKeyboardEvent(&event, *head, &(*letters));
-				         break;
-                                case SDL_QUIT:
-					done=1;
+			if (event.type == SDL_USEREVENT) {
+                timer_delay = anySpritesMoving(letters) ? 10 : 100;
+                moveSprites(&screen, letters, letterSpeed);
+                timer = SDL_AddTimer(timer_delay, TimerCallback, NULL);
+                break;
+            } else if (event.type == SDL_MOUSEBUTTONDOWN) {
+                clickDetect(event.button.button, event.button.x,
+                            event.button.y, screen, *head, letters);
+            } else if (event.type == SDL_KEYUP) {
+                handleKeyboardEvent(&event, *head, letters);
+            } else if (event.type == SDL_QUIT) {
+                done = 1;
+                break;
 			}
-                }
-		moveSprites(&screen, &(*letters), letterSpeed);
+            moveSprites(&screen, letters, letterSpeed);
         }
+    }
 }
 
 
@@ -1724,10 +1742,17 @@ SDL_Surface *screen;
 struct sprite* letters = NULL;
 //pthread_t audio;
 
+	// buffer sounds
+	int audio_rate = MIX_DEFAULT_FREQUENCY;
+	Uint16 audio_format = AUDIO_S16;
+	int audio_channels = 1;
+	int audio_buffers = 256;
+
+
 	// seed the random generator
 	srand(time(NULL));
 
-	if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO) < 0){
+	if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER) < 0){
 		fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
 		exit(1);
 	}
@@ -1742,12 +1767,6 @@ struct sprite* letters = NULL;
 	}
 
 	SDL_WM_SetCaption("Anagramarama", "ANAGRAMARAMA");
-
-	// buffer sounds
-	int audio_rate = MIX_DEFAULT_FREQUENCY;
-	Uint16 audio_format = AUDIO_S16;
-	int audio_channels = 1;
-	int audio_buffers = 256;
 
 	if(Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers)){
 		printf("unable to open audio!\n");
