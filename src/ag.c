@@ -52,6 +52,10 @@ version		who		changes
 
 0.5		Colm		Added keyboard input
 
+
+0.6		Paulo		Added i18n and Portugues dict
+
+
 ***********************************************************/
 
 #include <stdio.h>
@@ -70,7 +74,8 @@ version		who		changes
 //module level variables for game control
 char shuffle[]  = "£££££££";
 char answer[]   = "£££££££";
-
+char language[10];
+char txt[50];
 char* rootWord;
 int updateAnswers = 0;
 int startNewGame = 0;
@@ -982,7 +987,9 @@ int len=0;
 int done = 0;
 
 	filelocation = rand()%10000;
-	wordlist=fopen("wordlist.txt","r");
+
+	strcpy(txt,language);
+	wordlist=fopen(strcat(txt,"wordlist.txt"),"r");
 
 	for (i=0;i<=filelocation;i++){
 
@@ -992,7 +999,8 @@ int done = 0;
 		else{
 			// go back to the start of the file
 			fclose(wordlist);
-			fopen("wordlist.txt", "r");
+			strcpy(txt,language);
+			fopen(strcat(txt,"wordlist.txt"), "r");
 		}
 	}
 
@@ -1011,7 +1019,8 @@ int done = 0;
 			else{
 				// go back to the start of the file
 				fclose(wordlist);
-				fopen("wordlist.txt", "r");
+				strcpy(txt,language);
+				fopen(strcat(txt,"wordlist.txt"), "r");
 				fscanf(wordlist, "%s", wordFromList);
 			}
 		}
@@ -1485,7 +1494,8 @@ int happy = 0;   // we don't want any more than ones with 66 answers - that's al
 int i;
 
 	// show background
-	ShowBMP("images/background.bmp",screen, 0,0);
+	strcpy(txt,language);
+	ShowBMP(strcat(txt,"images/background.bmp"),screen, 0,0);
 
 	destroyLetters(&(*letters));
 
@@ -1594,7 +1604,6 @@ int timeNow;
 
 	// main game loop
 	while (!done){
-
 		if(winGame){
 
 			stopTheClock = 1;
@@ -1722,8 +1731,46 @@ struct node* head = NULL;
 struct dlb_node* dlbHead = NULL;
 SDL_Surface *screen;
 struct sprite* letters = NULL;
-//pthread_t audio;
+//pthread_t audio;	
+	strcpy(language,"i18n/");
 
+	if(argc == 2) {
+		strcat(language,argv[1]);
+	} 
+	else {
+		char * language2 = getenv("LANG");
+	
+		if(language2 == 0){
+			strcpy(language,"i18n/en_GB/");
+        	}
+		else {
+			char local[10];
+			int len = strlen(language2);
+			int i = 0;
+
+			while((language2[i] != '.')&&(i< len)){
+				local[i] = language2[i];
+				i++;
+			}
+			local[i] = '\0';
+
+			strcat(language,local);
+		}
+	}
+
+	strcat(language,"/");
+
+	strcpy(txt,language);
+	strcat(txt,"wordlist.txt");
+	FILE* wordlist;
+	wordlist = fopen(txt,"r");
+	//if(wordlist == 0){
+	//	strcpy(language,"i18n/en_GB/");
+	//}
+	//else {
+	//	fclose(wordlist);
+	//}
+	
 	// seed the random generator
 	srand(time(NULL));
 
@@ -1757,12 +1804,17 @@ struct sprite* letters = NULL;
 	bufferSounds(&soundCache);
 
 	// create dictionary
-	createDLBTree(&dlbHead);
+	createDLBTree(&dlbHead,language);
+
+	
 
 	// cache in-game graphics
-	letterBank = SDL_LoadBMP("images/letterBank.bmp");
-	smallLetterBank = SDL_LoadBMP("images/smallLetterBank.bmp");
-	numberBank = SDL_LoadBMP("images/numberBank.bmp");
+	strcpy(txt,language);
+	letterBank = SDL_LoadBMP(strcat(txt,"images/letterBank.bmp"));
+	strcpy(txt,language);
+	smallLetterBank = SDL_LoadBMP(strcat(txt,"images/smallLetterBank.bmp"));
+	strcpy(txt,language);
+	numberBank = SDL_LoadBMP(strcat(txt,"images/numberBank.bmp"));
 
 	rootWord = malloc(sizeof(char)*9);
 	newGame(&head, dlbHead, screen, &letters);

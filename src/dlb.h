@@ -32,5 +32,5 @@ struct dlb_node{
 
 struct dlb_node* dlb_insertLetter(char thisLetter);
 void dlb_push(struct dlb_node** dlbHead, char* thisWord);
-void createDLBTree(struct dlb_node** dlbHead);
+void createDLBTree(struct dlb_node** dlbHead,char* language);
 int dlb_lookup(struct dlb_node* dlbHead, char* thisWord);

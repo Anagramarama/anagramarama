@@ -91,16 +91,18 @@ int newHead = (*dlbHead==NULL);
 }
 
 /***************************************************************/
-void createDLBTree(struct dlb_node** dlbHead){
+void createDLBTree(struct dlb_node** dlbHead,char* language){
 // open the wordlist file and push all words onto the dictionary
 
 FILE* wordlist;
 char wordFromList[50];
 
 	//printf("createDLBTree\n");
-
+	
 	// open wordlist file
-	wordlist = fopen("wordlist.txt", "r");
+	char txt[50];
+	strcpy(txt,language);
+	wordlist = fopen(strcat(txt,"wordlist.txt"), "r");
 
 	// get each word from the list
 	while (fscanf(wordlist, "%s", wordFromList) != EOF){
