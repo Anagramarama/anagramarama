@@ -7,7 +7,7 @@
 # $Id$
 #-------------------------------------------------------------------------
 
-VERSION=0.2
+VERSION=0.3
 
 # You should set SDLDIR to the directory containing your SDL include
 # and lib directories.
@@ -63,6 +63,8 @@ RMDIR = rmdir /s /q >NUL
 RMDIR = deltree /y
 !endif
 DEL   = del /f /q
+CP    = copy /y >NUL
+MAKENSIS = "C:\Program Files (x86)\NSIS\makensis.exe"
 
 TMPDIR =$(OUTDIR)\Objects
 
@@ -87,6 +89,11 @@ ag:     setup $(OUTDIR)\ag.exe
 
 $(OUTDIR)\ag.exe: $(OBJS)
 	$(LD) $(LDFLAGS) -out:$@ $** $(LIBS)
+
+release: ag
+	@$(CP) $(SDLDIR:/=\)\bin\sdl.dll $(OUTDIR)\SDL.dll
+	@$(CP) $(SDLDIR:/=\)\bin\SDL_mixer.dll $(OUTDIR)\SDL_mixer.dll
+	@$(MAKENSIS) /V2 Anagramarama.nsi
 
 .PHONY: all ag
 
