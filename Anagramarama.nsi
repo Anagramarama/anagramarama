@@ -58,16 +58,10 @@ VIAddVersionKey FileDescription "Anagramarama Installer"
 ;; -------------------------------------------------------------------------
 ;; Language strings
 ;;
-LangString DESC_SecMain ${LANG_ENGLISH} \
-    "Install program files and English resources (required)."
-LangString DESC_SecDocs ${LANG_ENGLISH} \
-    "Install documentation."
-LangString DESC_SecLangPt ${LANG_ENGLISH} \
-    "Include Partugese support."
-LangString DESC_SecMenu ${LANG_ENGLISH} \
-    "Create Start menu shortcuts."
-LangString DESC_FinishPageText ${LANG_ENGLISH} \
-    "Successfully installed Anagramarama."
+LangString DESC_SecMain ${LANG_ENGLISH}  "Install program files and English resources (required)."
+LangString DESC_SecMenu ${LANG_ENGLISH}  "Create Start menu items."
+LangString DESC_FinishPageText ${LANG_ENGLISH} "Successfully installed Anagramarama."
+LangString DESC_SecLangPt ${LANG_ENGLISH} "Include Portugese language support."
 
 ;; -------------------------------------------------------------------------
 ;; Interface Settings
@@ -101,6 +95,7 @@ Section "Anagramara" SecMain
     File "Release\ag.exe"
     File "Release\SDL.dll"
     File "Release\SDL_mixer.dll"
+    File "readme"
     File /r "audio"
     SetOutPath "$INSTDIR\i18n"
     File /r "i18n\en_GB"
@@ -111,9 +106,11 @@ Section "Anagramara" SecMain
     WriteUninstaller "$INSTDIR\Uninstall.exe"
 SectionEnd
 
-Section "Documentation" SecDocs
+Section "Start Menu" SecMenu
     SetOutPath "$INSTDIR"
-    File "readme"
+    CreateDirectory "$SMPROGRAMS\Anagramarama"
+    CreateShortCut "$SMPROGRAMS\Anagramarama\Anagramarama.lnk" "$INSTDIR\ag.exe" "" "$INSTDIR\ag.exe" 0
+    CreateShortCut "$SMPROGRAMS\Anagramarama\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\Uninstall.exe" 0
 SectionEnd
 
 Section /o "Portugese" SecLangPt
@@ -121,12 +118,6 @@ Section /o "Portugese" SecLangPt
     File /r "i18n\pt_BR"
 SectionEnd
 
-Section /o "Start Menu Shortcuts" SecMenu
-    SetOutPath "$INSTDIR"
-    CreateDirectory "$SMPROGRAMS\Anagramarama"
-    CreateShortCut "$SMPROGRAMS\Anagramarama\Anagramarama.lnk" "$INSTDIR\ag.exe" "" "$INSTDIR\ag.exe" 0
-    CreateShortCut "$SMPROGRAMS\Anagramarama\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\Uninstall.exe" 0
-SectionEnd
 
 ;; -------------------------------------------------------------------------
 ;; Uninstaller Section
@@ -142,13 +133,12 @@ SectionEnd
 ;; Assign language strings to sections
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SecMain}   $(DESC_SecMain)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecDocs}   $(DESC_SecDocs)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecLangPt} $(DESC_SecLangPt)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecMenu}   $(DESC_SecMenu)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecLangPt} $(DESC_SecLangPt)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 !insertmacro MUI_LANGUAGE "English"
-!insertmacro MUI_LANGUAGE "PortugueseBR"
+;;!insertmacro MUI_LANGUAGE "PortugueseBR" ;; requires pt_BR translations above
 
 ;; -------------------------------------------------------------------------
 ;; Initialize variables

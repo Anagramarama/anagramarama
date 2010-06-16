@@ -90,12 +90,13 @@ ag:     setup $(OUTDIR)\ag.exe
 $(OUTDIR)\ag.exe: $(OBJS)
 	$(LD) $(LDFLAGS) -out:$@ $** $(LIBS)
 
-release: ag
+release: ag Anagramarama.nsi
 	@$(CP) $(SDLDIR:/=\)\bin\sdl.dll $(OUTDIR)\SDL.dll
 	@$(CP) $(SDLDIR:/=\)\bin\SDL_mixer.dll $(OUTDIR)\SDL_mixer.dll
 	@$(MAKENSIS) /V2 Anagramarama.nsi
+	@echo Installer file created
 
-.PHONY: all ag
+.PHONY: all ag release
 
 #-------------------------------------------------------------------------
 setup:
