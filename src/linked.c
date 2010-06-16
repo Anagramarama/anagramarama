@@ -155,7 +155,7 @@ int duplicate = 0;
 
 	if (!duplicate){
 	        len = strlen(anagram+1);
-	        newNode->anagram = malloc(sizeof(char)*len);
+	        newNode->anagram = malloc(sizeof(char)*(len + 1));
 	        strcpy(newNode->anagram, anagram);
 	        newNode->length = len + 1;
 	        newNode->found = 0;

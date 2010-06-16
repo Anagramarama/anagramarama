@@ -49,3 +49,4 @@ int nextBlankPosition(int box, int* index);
 //void clickDetect(int button, int x, int y, SDL_Surface *screen, struct sprite** letters);
 void destroyLetters(struct sprite** letters);
 //void buildLetters(struct sprite** letters, SDL_Surface* screen);
+int anySpritesMoving(struct sprite **letters);
