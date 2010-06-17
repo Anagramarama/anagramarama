@@ -87,7 +87,9 @@ Contact Details: colm@coralquest.com
 #define SCORE_WIDTH 18
 #define SCORE_HEIGHT 32
 
-#define SPACE_CHAR '£'
+#define SPACE_CHAR '#'
 #define ASCII_SPACE 32
-
+#define SPACE_FILLED_STRING "#######"
+#define SPACE_FILLED_CHARS {SPACE_CHAR, SPACE_CHAR, SPACE_CHAR, SPACE_CHAR,\
+                             SPACE_CHAR, SPACE_CHAR, SPACE_CHAR, 0}
 #define AVAILABLE_TIME 300

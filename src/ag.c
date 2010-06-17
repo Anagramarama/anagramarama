@@ -75,9 +75,9 @@
 #endif
 
 /* module level variables for game control */
-char shuffle[]  = "£££££££";
-char answer[]   = "£££££££";
-char language[10];
+char shuffle[8] = SPACE_FILLED_CHARS;
+char answer[8]  = SPACE_FILLED_CHARS;
+char language[64];
 char txt[50];
 char* rootWord;
 int updateAnswers = 0;
@@ -223,7 +223,7 @@ clearSoundBuffer()
 
 /***********************************************************
 synopsis: determine the next blank space in a string 
-	  blanks are indicated by pound £ not space
+	  blanks are indicated by pound not space
 	  
 inputs:   pointer the string to check
 
@@ -561,7 +561,7 @@ checkGuess(char* answer, struct node* head)
 
 /***********************************************************
 synopsis: determine the next blank space in a string 
-          blanks are indicated by pound £ not space.
+          blanks are indicated by pound not space.
 	  When a blank is found, move the chosen letter
 	  from one box to the other.
 	  i.e. If we're using the ANSWER box,
@@ -954,14 +954,11 @@ getRandomWord()
 
 	for (i=0;i<=filelocation;i++){
 
-		if(fscanf(wordlist, "%s", wordFromList) != EOF){
+		if (fscanf(wordlist, "%s", wordFromList) != EOF) {
 			/* spin on */
-		}
-		else{
+		} else {
 			/* go back to the start of the file */
-			fclose(wordlist);
-			strcpy(txt,language);
-			fopen(strcat(txt,"wordlist.txt"), "r");
+            fseek(wordlist, 0L, SEEK_SET);
 		}
 	}
 
@@ -976,12 +973,9 @@ getRandomWord()
 
 			if(fscanf(wordlist, "%s", wordFromList) != EOF){
 				/* spin on */
-			}
-			else{
+			} else {
 				/* go back to the start of the file */
-				fclose(wordlist);
-				strcpy(txt,language);
-				fopen(strcat(txt,"wordlist.txt"), "r");
+				fseek(wordlist, 0L, SEEK_SET);
 				fscanf(wordlist, "%s", wordFromList);
 			}
 		}
@@ -1017,30 +1011,6 @@ swapChars(int from, int to, char *string)
 	string[to] = swap;
 	return string;
 }
-
-/***********************************************************
-synopsis: working backwards in the string,
-	  find the first non space character
-
-inputs: a string to check
-
-outputs: the position of the character
-***********************************************************/
-static int
-revFirstNonSpace(const char *thisWord)
-{
-    int i;
-
-	for (i = strlen(thisWord) ; i>0; i--){
-		if (thisWord[i-1] != SPACE_CHAR){
-			return i;
-		}
-	}
-
-	return 0;
-}
-
-
 
 
 /***********************************************************
@@ -1228,7 +1198,7 @@ buildLetters(struct sprite** letters, SDL_Surface* screen)
 			thisLetter = NULL;
 		}
 		else{
-			shuffle[i] = '£';
+			shuffle[i] = SPACE_CHAR;
             /*	rect.x = 26 * GAME_LETTER_WIDTH;*/
 		}
 
@@ -1489,7 +1459,7 @@ newGame(struct node** head, struct dlb_node* dlbHead,
 	}
 
 	for (i = bigWordLen; i < 7; i++){
-		remain[i]='£';
+		remain[i] = SPACE_CHAR;
 	}
 
 	remain[7] = '\0';
@@ -1502,7 +1472,7 @@ newGame(struct node** head, struct dlb_node* dlbHead,
 	free(guess);
 	free(remain);
 
-	strcpy(answer, "£££££££");
+	strcpy(answer, SPACE_FILLED_STRING);
 
 	/* build up the letter sprites */
 	buildLetters(letters, screen);
@@ -1605,7 +1575,7 @@ gameLoop(struct node **head, struct dlb_node *dlbHead,
 			/* walk the list, setting everything to found */
 			solveIt(*head);
 			clearWord(letters);
-			strcpy(shuffle, "£££££££");
+			strcpy(shuffle, SPACE_FILLED_STRING);
 			strcpy(answer, rootWord);
 			/*displayLetters(screen);*/
 			displayAnswerBoxes(*head, screen);
