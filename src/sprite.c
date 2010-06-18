@@ -26,9 +26,10 @@ Contact Details: colm@coralquest.com
 #include "sprite.h"
 
 /********************************************************************/
-void setBackground(SDL_Surface** screen, struct sprite** movie){
-
-SDL_Rect rect;
+static void
+setBackground(SDL_Surface **screen, struct sprite **movie)
+{
+    SDL_Rect rect;
 
 	rect.x = (*movie)->x;
 	rect.y = (*movie)->y;
@@ -40,9 +41,10 @@ SDL_Rect rect;
 }
 
 /********************************************************************/
-void showSprite(SDL_Surface** screen, struct sprite** movie){
-
-SDL_Rect rect;
+static void
+showSprite(SDL_Surface **screen, struct sprite **movie)
+{
+    SDL_Rect rect;
 
 	rect.x = (*movie)->x;
 	rect.y = (*movie)->y;
@@ -55,9 +57,10 @@ SDL_Rect rect;
 }
 
 /********************************************************************/
-void resetBackground(SDL_Surface** screen, struct sprite** movie){
-
-SDL_Rect rect;
+static void
+resetBackground(SDL_Surface** screen, struct sprite** movie)
+{
+    SDL_Rect rect;
 
 	rect.x = (*movie)->x;
 	rect.y = (*movie)->y;
@@ -76,6 +79,7 @@ isSpriteMoving(struct sprite *p)
     /* returns true if this sprite needs to move */
 	return (p->y != p->toY) ||  (p->x != p->toX);
 }
+
 int
 anySpritesMoving(struct sprite **letters)
 {
@@ -88,11 +92,12 @@ anySpritesMoving(struct sprite **letters)
 }
 
 /********************************************************************/
-void moveSprite(SDL_Surface** screen, struct sprite** movie, int letterSpeed){
-
-int i;
-int x, y;
-int Xsteps;
+static void
+moveSprite(SDL_Surface** screen, struct sprite** movie, int letterSpeed)
+{
+    int i;
+    int x, y;
+    int Xsteps;
 
 	// move a sprite from it's curent location to the new location
 	if( (  (*movie)->y != (*movie)->toY )  ||  (   (*movie)->x != (*movie)->toX )   ){
@@ -131,9 +136,10 @@ int Xsteps;
 }
 
 /********************************************************************/
-void moveSprites(SDL_Surface** screen, struct sprite** letters, int letterSpeed){
-
-struct sprite* current;
+void
+moveSprites(SDL_Surface** screen, struct sprite** letters, int letterSpeed)
+{
+    struct sprite* current;
 
 	current= *letters;
 	while(current!=NULL){
@@ -154,18 +160,24 @@ struct sprite* current;
 }
 
 /********************************************************************/
-void destroyLetters(struct sprite** letters){
-struct sprite* current = *letters;
-struct sprite* previous = NULL;
-
-	while(current!=NULL){
+void
+destroyLetters(struct sprite **letters)
+{
+    struct sprite *current = *letters;
+	while (current != NULL) {
+		struct sprite *tmp = current;
 		SDL_FreeSurface(current->sprite);
 		SDL_FreeSurface(current->replace);
-		previous = current;
 		current = current->next;
-		free(previous);
+		free(tmp);
 	}
-
-	(*letters)=NULL;
-
+	*letters = NULL;
 }
+
+/*
+ * Local variables:
+ * mode: c
+ * indent-tabs-mode: nil
+ * c-basic-offset: 4
+ * End:
+ */

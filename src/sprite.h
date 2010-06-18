@@ -29,7 +29,7 @@ Contact Details: colm@coralquest.com
 #define BOX_START_X 80
 #define ANSWER_BOX_Y 243
 
-struct sprite{
+struct sprite {
 	SDL_Surface* sprite;
 	SDL_Surface* replace;
 	char letter;
@@ -40,13 +40,7 @@ struct sprite{
 	int box;
 };
 
-void setBackground(SDL_Surface** screen, struct sprite** movie);
-void showSprite(SDL_Surface** screen, struct sprite** movie);
-void resetBackground(SDL_Surface** screen, struct sprite** movie);
-void moveSprite(SDL_Surface** screen, struct sprite** movie, int letterSpeed);
 void moveSprites(SDL_Surface** screen, struct sprite** letters, int LetterSpeed);
-int nextBlankPosition(int box, int* index);
-//void clickDetect(int button, int x, int y, SDL_Surface *screen, struct sprite** letters);
-void destroyLetters(struct sprite** letters);
-//void buildLetters(struct sprite** letters, SDL_Surface* screen);
+int nextBlankPosition(int box, int *index);
+void destroyLetters(struct sprite **letters);
 int anySpritesMoving(struct sprite **letters);
