@@ -1,7 +1,7 @@
 CC=gcc
 LD=gcc
-CFLAGS=-g -Wall `sdl-config --cflags`
-CFLAG_OPTS=-funroll-loops -fomit-frame-pointer
+CFLAGS  =-g -Wall `sdl-config --cflags`
+CFLAGS +=-O9 -funroll-loops -fomit-frame-pointer
 LDFLAGS=`sdl-config --libs` -lSDL_mixer
 
 C_FILES=src/dlb.c src/linked.c src/sprite.c src/ag.c
