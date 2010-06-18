@@ -21,15 +21,23 @@ Contact Details: colm@coralquest.com
 */
 
 struct node {
-	char*		anagram;
-	int		found;
-	int		guessed;
-	int		length;
-	struct node*	next;
+    char*   anagram;
+    int	    found;
+    int	    guessed;
+    int     length;
+    struct node *next;
 };
 
 int Length(struct node* head);
 void swap(struct node** from, struct node** to);
 void sort(struct node** headRef);
 void destroyAnswers(struct node** headRef);
-void push(struct node** headRef, char* anagram);
+void push(struct node** headRef, const char *anagram);
+
+/*
+ * Local variables:
+ * mode: c
+ * c-basic-offset: 4
+ * indent-tabs-mode: nil
+ * End:
+ */

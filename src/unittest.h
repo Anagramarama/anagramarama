@@ -64,6 +64,18 @@ typedef unsigned __int64 uint64_t;
 #include <stdint.h>
 #endif
 
+#ifdef __GNUC__
+#define NOWARN __attribute__((unused))
+#else
+#define NOWARN
+#endif
+static void test_equals_int(const char *what, const int a, const int b) NOWARN;
+static void test_equals_wide(const char *what, const uint64_t a, const uint64_t b) NOWARN;
+static void test_equals_ptr(const char *what, const void *a, const void *b) NOWARN;
+static void test_equals_str(const char *what, const char *a, const char *b) NOWARN;
+static void test_equals_strn(const char *what, const char *a, const char *b, size_t n) NOWARN;
+static void test_non_null_ptr(const char *what, const void *a) NOWARN;
+
 typedef void * (unit_test_setup_t)();
 typedef int    (unit_test_run_t)(void *);
 typedef void   (unit_test_teardown_t)(void *);
@@ -79,7 +91,7 @@ static int fail_count = 0;
 
 #define RUN(what) printf("\t%s\n", what); test_count++;
 
-static test_fail(const char *what)
+static void test_fail(const char *what)
 {
     printf("\tFAIL: %s\n", what);
     fflush(stdout);
@@ -100,15 +112,15 @@ static void test_equals_ptr(const char *what, const void *a, const void *b)
     RUN(what);
     if (a != b) test_fail(what);
 }
-static void test_equals_str(const char *what, const uint8_t *a, const uint8_t *b)
+static void test_equals_str(const char *what, const char *a, const char *b)
 {
     RUN(what);
-    if (strcmp((const char *)a,(const char *)b)) test_fail(what);
+    if (strcmp(a,b)) test_fail(what);
 }
-static void test_equals_strn(const char *what, const uint8_t *a, const uint8_t *b, size_t n)
+static void test_equals_strn(const char *what, const char *a, const char *b, size_t n)
 {
     RUN(what);
-    if (strncmp((const char *)a,(const char *)b,n)) test_fail(what);
+    if (strncmp(a,b,n)) test_fail(what);
 }
 static void test_non_null_ptr(const char *what, const void *a)
 {
@@ -123,7 +135,7 @@ test_print_results()
 }
 
 static int
-run_tests(const struct unit_test_t *testPtr)
+run_test(const struct unit_test_t *testPtr)
 {
     int r = 0;
     void *clientData = NULL;
@@ -134,3 +146,11 @@ run_tests(const struct unit_test_t *testPtr)
         testPtr->tearDown(clientData);
     return r;
 }
+
+#define run_tests(tests) do {                                           \
+    size_t n;                                                           \
+    for (n = 0; n < sizeof(tests)/sizeof(tests[0]); ++n) {              \
+        run_test(&tests[n]);                                            \
+    }                                                                   \
+    test_print_results();                                               \
+ } while(0);
