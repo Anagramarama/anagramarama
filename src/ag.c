@@ -58,6 +58,8 @@
  * -------------------------------------------------------------------
  */
 
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -939,55 +941,41 @@ inputs: n/a
 
 outputs: a random word
 ***********************************************************/
-static char *
-getRandomWord()
+static void
+getRandomWord(char *output, size_t length)
 {
-    FILE* wordlist;
-    int filelocation;
-    int i;
-    char* wordFromList = malloc(sizeof(char) * 50);
-    int len=0;
-    int done = 0;
+    FILE *fp;
+    struct stat statbuf;
+    char buffer[64];
     
-	filelocation = rand()%10000;
+    assert(length == 9);
 
 	strcpy(txt,language);
-	wordlist = fopen(strcat(txt,"wordlist.txt"),"r");
+    strcat(txt,"wordlist.txt");
+	fp = fopen(txt,"r");
 
-	for (i = 0; i <= filelocation; i++) {
-
-		if (fscanf(wordlist, "%s", wordFromList) != EOF) {
-			/* spin on */
-		} else {
-			/* go back to the start of the file */
-            fseek(wordlist, 0L, SEEK_SET);
-		}
-	}
+    stat(txt, &statbuf);
+    fseek(fp, (rand() % statbuf.st_size), SEEK_SET);
+    if (fscanf(fp, "%63s", buffer) == EOF)
+        fseek(fp, 0, SEEK_SET);
 
 	/* ok random location reached */
-	while (!done) {
-		len = strlen(wordFromList);
-		if ((len==7)) {/* ||(len==6)||(len==5)){ */
-			done = 1;
-		} else {
-			if (fscanf(wordlist, "%s", wordFromList) != EOF) {
-				/* spin on */
-			} else {
-				/* go back to the start of the file */
-				fseek(wordlist, 0L, SEEK_SET);
-				i = fscanf(wordlist, "%s", wordFromList);
-                assert(i != EOF);
-			}
+	while (strlen(buffer) != 7) {
+        if (fscanf(fp, "%63s", buffer) == EOF) {
+            /* go back to the start of the file */
+            int i;
+            fseek(fp, 0L, SEEK_SET);
+            i = fscanf(fp, "%63s", buffer);
+            assert(i != EOF);
 		}
 	}
 	
-	fclose(wordlist);
+	fclose(fp);
 
 	/* add in our space character */
-	wordFromList[len] = ' ';
-	wordFromList[len+1] = '\0';
-
-	return wordFromList;
+    strcpy(output, buffer);
+    strcat(output, " ");
+	return;
 }
 
 /***********************************************************
@@ -1404,8 +1392,10 @@ newGame(struct node** head, struct dlb_node* dlbHead,
 	remain = malloc(sizeof(char)*50);
 
 	while (!happy) {
+        char buffer[9];
+        getRandomWord(buffer, sizeof(buffer));
 		strcpy(guess,"");
-		strcpy(rootWord, getRandomWord());
+		strcpy(rootWord, buffer);
 		bigWordLen = strlen(rootWord)-1;
 		strcpy(remain,rootWord);
 
@@ -1705,6 +1695,13 @@ main(int argc, char *argv[])
 	/* identify the resource locale */
 	init_locale(argc, argv);
 
+	/* create dictionary */
+    strcpy(txt, language);
+	if (!dlb_create(&dlbHead, strcat(txt, "wordlist.txt"))) {
+        printf("failed to open word list file\n");
+        exit(1);
+    }
+
 	if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER) < 0){
 		fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
 		exit(1);
@@ -1728,9 +1725,6 @@ main(int argc, char *argv[])
 
 	bufferSounds(&soundCache);
 
-	/* create dictionary */
-	createDLBTree(&dlbHead, language);
-
 	/* cache in-game graphics */
 	strcpy(txt, language);
 	letterBank = SDL_LoadBMP(strcat(txt,"images/letterBank.bmp"));
@@ -1748,8 +1742,9 @@ main(int argc, char *argv[])
 	free(rootWord);
 	Mix_CloseAudio();
 	clearSoundBuffer(&soundCache);
-	/* trashDLBTree(); */
+	dlb_free(dlbHead);
 	destroyLetters(&letters);
+	destroyAnswers(&head);
 	SDL_FreeSurface(screen);
 	SDL_FreeSurface(letterBank);
 	SDL_FreeSurface(smallLetterBank);

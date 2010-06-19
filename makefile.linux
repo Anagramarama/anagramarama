@@ -3,13 +3,12 @@
 CC=gcc
 LD=gcc
 CFLAGS  =-g -Wall `sdl-config --cflags`
-#CFLAGS +=-O9 -funroll-loops -fomit-frame-pointer
+CFLAGS +=-O9 -funroll-loops -fomit-frame-pointer
 LDFLAGS=`sdl-config --libs` -lSDL_mixer
 
 C_FILES=src/dlb.c src/linked.c src/sprite.c src/ag.c
 OBJ_FILES=src/dlb.o src/linked.o src/sprite.o src/ag.o
 TEST_OBJS=$(OBJ_FILES:src/ag.o=src/ag_test.o)
-OUT_FILE=ag
 
 all:ag
 
@@ -34,12 +33,15 @@ src/ag.o: src/ag.c
 src/ag_test.o: src/ag_test.c
 	$(CC) $(CFLAGS) -DUNIT_TEST -c -o $@ $^
 
-tests: test_ag test_linked
+tests: test_ag test_linked test_dlb
 
 test_ag: ag $(TEST_OBJS) src/unittest.h
 	$(LD) $(LDFLAGS) -o $@ $(TEST_OBJS)
 
 test_linked: src/linked.c src/unittest.h
+	$(CC) $(CFLAGS) -Isrc -DUNIT_TEST $< -o $@
+
+test_dlb: src/dlb.c src/unittest.h
 	$(CC) $(CFLAGS) -Isrc -DUNIT_TEST $< -o $@
 
 clean:

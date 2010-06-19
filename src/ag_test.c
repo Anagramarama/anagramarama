@@ -46,11 +46,21 @@ static int test_whereinstr()
     return 0;
 }
 
+static int test_getRandomWord()
+{
+    char buffer[9];
+    strcpy(language, "i18n/en_GB/");
+    getRandomWord(buffer, sizeof(buffer));
+    test_equals_int("randword last char is space", ' ', buffer[7]);
+    return 0;
+}
+
 struct unit_test_t unit_tests[] = {
     {NULL, test_shiftLeftKill, NULL},
     {NULL, test_shiftLeft, NULL},
     {NULL, test_nextBlank, NULL},
     {NULL, test_whereinstr, NULL},
+    {NULL, test_getRandomWord, NULL},
 };
 
 int
