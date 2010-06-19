@@ -20,17 +20,24 @@ Contact Details: colm@coralquest.com
 		 12 Weston Terrace, West Kilbride, KA23 9JX.  Scotland.
 */
 
-#include <stdlib.h>
-
-struct dlb_node{
-
-	char letter;
-	int valid;
-	struct dlb_node* sibling;
-	struct dlb_node* child;
+struct dlb_node {
+    char letter;
+    int valid;
+    struct dlb_node *sibling;
+    struct dlb_node *child;
 };
 
-struct dlb_node* dlb_insertLetter(char thisLetter);
-void dlb_push(struct dlb_node** dlbHead, char* thisWord);
-void createDLBTree(struct dlb_node** dlbHead,char* language);
-int dlb_lookup(struct dlb_node* dlbHead, char* thisWord);
+typedef int (*dlb_node_operation)(struct dlb_node *node);
+
+int dlb_create(struct dlb_node **headPtr, const char *language);
+void dlb_free(struct dlb_node *head);
+int dlb_lookup(struct dlb_node *head, const char *word);
+void dlb_walk(struct dlb_node *head, dlb_node_operation op);
+
+/*
+ * Local variables:
+ * mode: c
+ * indent-tabs-mode: nil
+ * c-basic-offset: 4
+ * End:
+ */

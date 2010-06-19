@@ -23,48 +23,75 @@ Contact Details: colm@coralquest.com
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <assert.h>
 #include "dlb.h"
 
-/***************************************************************/
-struct dlb_node* dlb_insertLetter(char thisLetter){
-// create and return a new letter node
-struct dlb_node* newNode = malloc(sizeof(struct dlb_node));
+/*
+ * create and return a new letter node
+ */
 
-//	printf("dbl_insertLetter %c\n", thisLetter);
-
-	newNode->letter = thisLetter;
-	newNode->valid = 0;
-	newNode->sibling = NULL;
-	newNode->child = NULL;
-
-	return newNode;
+static struct dlb_node *
+dlb_create_node(char c)
+{
+    struct dlb_node *node = malloc(sizeof(struct dlb_node));
+    node->letter = c;
+    node->valid = 0;
+    node->sibling = NULL;
+    node->child = NULL;
+    return node;
 }
 
-/***************************************************************/
-void dlb_push(struct dlb_node** dlbHead, char* thisWord){
-// add a new word to the dictionary
-struct dlb_node* current = *dlbHead;
-struct dlb_node* previous = NULL;
-size_t i=0;
-char letter;
-int child = 0;
-int sibling = 0;
-int newHead = (*dlbHead==NULL);
+static int
+dlb_free_node(struct dlb_node *node)
+{
+    memset(node, 0, sizeof(struct dlb_node));
+    free(node);
+    return 0;
+}
 
-//	printf("dbl_push %s\n", thisWord);
-//	printf("head : %i\n", newHead);
+void
+dlb_walk(struct dlb_node *node, dlb_node_operation op)
+{
+    while (node) {
+        struct dlb_node *tmpnode = node;
+        if (node->child) {
+            dlb_walk(node->child, op);
+        }
+        node = node->sibling;
+        op(tmpnode);
+    }
+}
 
-	while (i<=strlen(thisWord)-1){
+void
+dlb_free(struct dlb_node *head)
+{
+    dlb_walk(head, dlb_free_node);
+}
 
-		letter = thisWord[i];
+/*
+ * add a new word to the dictionary
+ */
 
-		if (current == NULL){
-			current = dlb_insertLetter(letter);
-			if (newHead){
+static void
+dlb_push(struct dlb_node **dlbHead, const char *word)
+{
+    struct dlb_node* current = *dlbHead;
+    struct dlb_node* previous = NULL;
+    const char *p;
+    int child = 0;
+    int sibling = 0;
+    int newHead = (*dlbHead==NULL);
+
+    for (p = word; p && *p; ) {
+		char letter = *p;
+
+		if (current == NULL) {
+			current = dlb_create_node(letter);
+			if (newHead) {
 				*dlbHead = current;
 				newHead = 0;
 			}
-			if (child){
+			if (child) {
 				previous->child = current;
 			}
 			if (sibling){
@@ -74,15 +101,13 @@ int newHead = (*dlbHead==NULL);
 
 		child = 0;
 		sibling = 0;
-
 		previous = current;
 
-		if (letter == previous->letter){
-			i++;
+		if (letter == previous->letter) {
+            ++p;
 			child = 1;
 			current = previous->child;
-		}
-		else{
+		} else {
 			sibling = 1;
 			current = previous->sibling;
 		}
@@ -90,67 +115,94 @@ int newHead = (*dlbHead==NULL);
 	previous->valid = 1;
 }
 
-/***************************************************************/
-void createDLBTree(struct dlb_node** dlbHead,char* language){
-// open the wordlist file and push all words onto the dictionary
+/*
+ * open the wordlist file and push all words onto the dictionary
+ * tree. Returns false if the file could not be opened.
+ */
 
-FILE* wordlist;
-char wordFromList[50];
-
-	//printf("createDLBTree\n");
-	
-	// open wordlist file
-	char txt[50];
-	strcpy(txt,language);
-	wordlist = fopen(strcat(txt,"wordlist.txt"), "r");
-
-	// get each word from the list
-	while (fscanf(wordlist, "%s", wordFromList) != EOF){
-		dlb_push(&(*dlbHead),wordFromList);
-	}
-
-	// close wordlist file
-	fclose(wordlist);
+int
+dlb_create(struct dlb_node **dlbHead, const char *filename)
+{
+    int r = 0;
+    char buffer[64];
+	FILE *fp = fopen(filename, "r");
+    if (fp) {
+        while (fscanf(fp, "%63s", buffer) != EOF){
+            dlb_push(dlbHead, buffer);
+        }
+        fclose(fp);
+        r = 1;
+    }
+    return r;
 }
 
-/***************************************************************/
-int dlb_lookup(struct dlb_node* dlbHead, char* thisWord){
-// determine if a given word is in the dictionary
-// essentially the same as a push, but doesn't add
-// any of the new letters
+/*
+ * determine if a given word is in the dictionary essentially the same
+ * as a push, but doesn't add any of the new letters
+ */
 
-struct dlb_node* current = dlbHead;
-struct dlb_node* previous = NULL;
-size_t i=0;
-char letter;
-int retval = 0;
-
-	//printf("dlb_lookup %s\n", thisWord);
-
-	while (i<=strlen(thisWord)-1){
-
+int
+dlb_lookup(struct dlb_node *head, const char *word)
+{
+    struct dlb_node *current = head;
+    struct dlb_node *previous = NULL;
+    const char *p;
+    int retval = 0;
+    
+    for (p = word; p && *p; ) {
+		char letter = *p;
 		if (current == NULL) {
 			retval = 0;
 			break;
 		}
 
-		//printf("%c",current->letter);
-
-		letter = thisWord[i];
-
 		previous = current;
 
-		if (letter == previous->letter){
-			i++;
+		if (letter == previous->letter) {
+			++p;
 			current = previous->child;
-			//printf(".%c., %i\n",previous->letter,previous->valid);
 			retval = previous->valid;
-		}
-		else{
+		} else {
 			current = previous->sibling;
 			retval = 0;
 		}
 	}
-
 	return retval;
 }
+
+#ifdef UNIT_TEST
+#include "unittest.h"
+
+static int test_dlb()
+{
+    struct dlb_node *head = NULL;
+    test_equals_int("check code for bad file", 0,
+                    dlb_create(&head, "src/garbage_bad_file"));
+    test_equals_int("check code for valid file", 1,
+                    dlb_create(&head, "i18n/en_GB/wordlist.txt"));
+    test_equals_int("check lookup", 1, dlb_lookup(head, "anagram"));
+    test_equals_int("check lookup", 1, dlb_lookup(head, "zygote"));
+    dlb_free(head);
+    return 0;
+}
+
+struct unit_test_t unit_tests[] = {
+    { NULL, test_dlb, NULL }
+};
+
+int
+main(void)
+{
+    run_tests(unit_tests);
+    return 0;
+}
+
+#endif /* UNIT_TEST */
+
+/*
+ * Local variables:
+ * mode: c
+ * indent-tabs-mode: nil
+ * c-basic-offset: 4
+ * End:
+ */
