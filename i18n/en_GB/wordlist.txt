@@ -38,7 +38,6 @@ abides
 abiding
 ability
 abject
-abjects
 abjure
 abjured
 abjures
@@ -61,7 +60,6 @@ aborts
 abound
 abounds
 about
-abouts
 above
 abrade
 abraded
@@ -349,8 +347,6 @@ ages
 aghast
 agile
 agilely
-agiler
-agilest
 agility
 agitate
 agleam
@@ -366,12 +362,9 @@ agrees
 aground
 ague
 aha
-ahas
 ahead
 ahem
-ahems
 ahoy
-ahoys
 aid
 aide
 aided
@@ -415,7 +408,6 @@ airy
 aisle
 aisled
 aisles
-aisling
 ajar
 akimbo
 akin
@@ -423,7 +415,6 @@ alarm
 alarmed
 alarms
 alas
-alases
 alb
 albeit
 albino
@@ -451,7 +442,6 @@ alga
 algae
 algebra
 alias
-aliased
 aliases
 alibi
 alibied
@@ -564,8 +554,6 @@ amen
 amend
 amended
 amends
-amened
-amening
 amenity
 amens
 amiable
@@ -705,7 +693,6 @@ anoint
 anoints
 anomaly
 anon
-anons
 anorak
 anoraks
 another
@@ -834,7 +821,6 @@ archer
 archers
 archery
 arches
-archest
 arching
 archive
 archly
@@ -1036,7 +1022,6 @@ astrals
 astray
 astride
 astute
-astuter
 asunder
 asylum
 asylums
@@ -1105,7 +1090,6 @@ augured
 augurs
 augury
 august
-augusts
 auk
 auks
 aunt
@@ -1134,7 +1118,6 @@ availed
 avails
 avarice
 avast
-avasts
 avatar
 avatars
 avenge
@@ -1156,8 +1139,6 @@ avians
 aviary
 aviator
 avid
-avider
-avidest
 avidity
 avidly
 avocado
@@ -1183,11 +1164,8 @@ award
 awarded
 awards
 aware
-awarer
-awarest
 awash
 away
-aways
 awe
 awed
 aweigh
@@ -1287,7 +1265,6 @@ baggy
 bagpipe
 bags
 bah
-bahs
 bail
 bailed
 bailiff
@@ -1353,7 +1330,6 @@ bamboo
 bamboos
 ban
 banal
-banaler
 banana
 bananas
 band
@@ -1361,7 +1337,6 @@ bandage
 bandana
 banded
 bandied
-bandier
 bandies
 banding
 bandit
@@ -1583,7 +1558,6 @@ beading
 beads
 beady
 beagle
-beagled
 beagles
 beak
 beaked
@@ -1816,7 +1790,6 @@ beside
 besides
 besiege
 besom
-besomed
 besoms
 besot
 besots
@@ -1838,7 +1811,6 @@ betake
 betaken
 betakes
 betas
-betcha
 bethink
 betide
 betided
@@ -2005,7 +1977,6 @@ bitchy
 bite
 bites
 biting
-bitings
 bitmap
 bits
 bitten
@@ -2030,8 +2001,6 @@ bladed
 blades
 blading
 blah
-blahed
-blahing
 blahs
 blame
 blamed
@@ -2260,7 +2229,6 @@ boggled
 boggles
 boggy
 bogie
-bogied
 bogies
 bogs
 bogus
@@ -2336,7 +2304,6 @@ bonnie
 bonnier
 bonny
 bonsai
-bonsais
 bonus
 bonuses
 bony
@@ -2423,7 +2390,6 @@ bosom
 bosoms
 boss
 bossed
-bosser
 bosses
 bossier
 bossily
@@ -2586,9 +2552,7 @@ breathe
 breaths
 breathy
 bred
-breded
 bredes
-breding
 breech
 breed
 breeder
@@ -2723,7 +2687,6 @@ brunch
 brunet
 brunets
 brunt
-brunted
 brunts
 brush
 brushed
@@ -2799,7 +2762,6 @@ buildup
 built
 bulb
 bulbed
-bulbing
 bulbous
 bulbs
 bulge
@@ -3181,7 +3143,6 @@ camp
 camped
 camper
 campers
-campest
 camphor
 campier
 camping
@@ -3396,7 +3357,6 @@ cassias
 cassock
 cast
 caste
-casted
 caster
 casters
 castes
@@ -3704,7 +3664,6 @@ chiffon
 chigger
 chignon
 child
-childed
 childes
 chile
 chiles
@@ -3749,9 +3708,7 @@ chit
 chitin
 chits
 chive
-chived
 chives
-chiving
 chock
 chocked
 chocks
@@ -3961,7 +3918,6 @@ clerk
 clerked
 clerks
 clever
-cleves
 clew
 clewed
 clewing
@@ -4008,7 +3964,6 @@ clock
 clocked
 clocks
 clod
-clodded
 clods
 clog
 clogged
@@ -4111,8 +4066,6 @@ coaxes
 coaxing
 cob
 cobalt
-cobbed
-cobbing
 cobble
 cobbled
 cobbler
@@ -4124,7 +4077,6 @@ cobweb
 cobwebs
 cocaine
 cocci
-coccis
 coccus
 coccyx
 cochlea
@@ -4237,7 +4189,6 @@ collie
 collied
 collier
 collies
-colling
 colloid
 collude
 cologne
@@ -4321,7 +4272,6 @@ concept
 concern
 concert
 conch
-conched
 conches
 conchs
 concise
@@ -4465,9 +4415,7 @@ copping
 copra
 cops
 copse
-copsed
 copses
-copsing
 copter
 copters
 copula
@@ -4556,7 +4504,6 @@ cotes
 coting
 cots
 cottage
-cotted
 cotter
 cotters
 cotton
@@ -4795,9 +4742,7 @@ crier
 criers
 cries
 crime
-crimed
 crimes
-criming
 crimp
 crimped
 crimps
@@ -4854,7 +4799,6 @@ crossly
 crotch
 crouch
 croup
-crouped
 croups
 croupy
 crow
@@ -4881,7 +4825,6 @@ crudity
 cruel
 crueler
 cruelly
-cruels
 cruelty
 cruet
 cruets
@@ -4915,7 +4858,6 @@ cruxes
 cry
 crybaby
 crying
-cryings
 crypt
 cryptic
 crypts
@@ -4966,8 +4908,6 @@ cults
 culture
 culvert
 cumin
-cumming
-cums
 cumuli
 cumulus
 cunning
@@ -5206,7 +5146,6 @@ danker
 dankest
 dankly
 dapper
-dappers
 dapple
 dappled
 dapples
@@ -5595,7 +5534,6 @@ derails
 derange
 derbies
 derby
-deres
 deride
 derided
 derides
@@ -5720,7 +5658,6 @@ dickier
 dickies
 dicks
 dicky
-dickys
 dicta
 dictate
 diction
@@ -5770,7 +5707,6 @@ dilemma
 dill
 dilled
 dillies
-dilling
 dills
 dilly
 dilute
@@ -5919,7 +5855,6 @@ dithers
 ditties
 ditto
 dittoed
-dittoes
 dittos
 ditty
 diurnal
@@ -6070,8 +6005,6 @@ doomed
 dooming
 dooms
 door
-doored
-dooring
 doorman
 doormat
 doormen
@@ -6115,7 +6048,6 @@ doted
 dotes
 doth
 doting
-dotings
 dots
 dotted
 dotting
@@ -6406,7 +6338,6 @@ dummy
 dump
 dumped
 dumpier
-dumpies
 dumping
 dumps
 dumpy
@@ -6428,7 +6359,6 @@ dunned
 dunner
 dunnest
 dunning
-dunno
 duns
 duo
 duodena
@@ -6489,7 +6419,6 @@ dynamic
 dynamo
 dynamos
 dynasty
-eBay
 each
 eager
 eagerer
@@ -6742,7 +6671,6 @@ emerald
 emerge
 emerged
 emerges
-emeried
 emeries
 emery
 emetic
@@ -7051,7 +6979,6 @@ eunuch
 eunuchs
 euphony
 eureka
-eurekas
 euro
 euros
 evacuee
@@ -7282,11 +7209,8 @@ failing
 fails
 failure
 fain
-fained
 fainer
 fainest
-faining
-fains
 faint
 fainted
 fainter
@@ -7540,7 +7464,6 @@ fervid
 fervour
 fest
 festal
-festals
 fester
 festers
 festive
@@ -7618,7 +7541,6 @@ fierce
 fiercer
 fierier
 fiery
-fies
 fiesta
 fiestas
 fife
@@ -7709,7 +7631,6 @@ fink
 finked
 finking
 finks
-finner
 finnier
 finny
 fins
@@ -7732,7 +7653,6 @@ firmest
 firming
 firmly
 firms
-firring
 firs
 first
 firstly
@@ -7815,7 +7735,6 @@ flaked
 flakes
 flakier
 flaking
-flaks
 flaky
 flambes
 flame
@@ -7983,7 +7902,6 @@ flubs
 flue
 fluency
 fluent
-fluents
 flues
 fluff
 fluffed
@@ -8327,7 +8245,6 @@ friend
 friends
 fries
 frieze
-friezed
 friezes
 frigate
 fright
@@ -8643,7 +8560,6 @@ gape
 gaped
 gapes
 gaping
-gapings
 gaps
 garage
 garaged
@@ -8715,9 +8631,7 @@ gauged
 gauges
 gauging
 gaunt
-gaunted
 gaunter
-gaunts
 gauze
 gauzier
 gauzy
@@ -9128,7 +9042,6 @@ golfer
 golfers
 golfing
 golfs
-gollies
 golly
 gonad
 gonads
@@ -9140,7 +9053,6 @@ gong
 gonged
 gonging
 gongs
-gonna
 goo
 goober
 goobers
@@ -9186,7 +9098,6 @@ gorse
 gory
 gos
 gosh
-goshes
 gosling
 gospel
 gospels
@@ -9194,7 +9105,6 @@ gossip
 gossips
 gossipy
 got
-gotta
 gotten
 gouge
 gouged
@@ -9211,7 +9121,6 @@ goutier
 gouty
 govern
 governs
-govs
 gown
 gowned
 gowning
@@ -9266,13 +9175,11 @@ granted
 grants
 granule
 grape
-graped
 grapes
 graph
 graphed
 graphic
 graphs
-graping
 grapnel
 grapple
 grasp
@@ -9962,7 +9869,6 @@ heckler
 heckles
 hectare
 hectic
-hectics
 hector
 hectors
 hedge
@@ -10034,7 +9940,6 @@ hempen
 hems
 hen
 hence
-hences
 henna
 hennaed
 hennas
@@ -10044,7 +9949,6 @@ hep
 hepatic
 hepper
 heppest
-heps
 her
 herald
 heralds
@@ -10400,7 +10304,6 @@ hoses
 hosiery
 hosing
 hospice
-hosses
 host
 hostage
 hosted
@@ -10485,10 +10388,7 @@ hugger
 hugging
 hugs
 huh
-huhs
 hula
-hulaed
-hulaing
 hulas
 hulk
 hulking
@@ -10821,7 +10721,6 @@ incubus
 incur
 incurs
 indeed
-indeeds
 indent
 indents
 index
@@ -11035,7 +10934,6 @@ iodises
 ion
 ionise
 ionised
-ioniser
 ionises
 ions
 iota
@@ -11285,10 +11183,8 @@ jobbing
 jobless
 jobs
 jock
-jocked
 jockey
 jockeys
-jocking
 jocks
 jocose
 jocular
@@ -11446,10 +11342,8 @@ jute
 juts
 jutted
 jutting
-kHz
 kabob
 kabobs
-kaboom
 kale
 kaolin
 kapok
@@ -11539,7 +11433,6 @@ kidded
 kidder
 kidders
 kiddie
-kiddied
 kiddies
 kidding
 kiddo
@@ -11572,7 +11465,6 @@ kimono
 kimonos
 kin
 kind
-kinda
 kinder
 kindest
 kindle
@@ -11603,8 +11495,6 @@ kiosks
 kipper
 kippers
 kirk
-kirked
-kirking
 kirks
 kismet
 kiss
@@ -11692,10 +11582,8 @@ knuckle
 koala
 koalas
 kook
-kooked
 kookie
 kookier
-kooking
 kooks
 kooky
 kopeck
@@ -11803,7 +11691,6 @@ lames
 lamest
 laming
 lammed
-lammer
 lamming
 lamp
 lampoon
@@ -12064,7 +11951,6 @@ leeway
 left
 lefter
 leftest
-leftie
 lefties
 leftism
 leftist
@@ -12105,10 +11991,8 @@ leis
 leisure
 lemma
 lemmas
-lemme
 lemming
 lemon
-lemoned
 lemons
 lemony
 lemur
@@ -12189,8 +12073,6 @@ liaison
 liar
 liars
 lib
-libbed
-libbing
 libel
 libels
 liberal
@@ -12217,7 +12099,6 @@ lied
 lief
 liefer
 liefest
-liefs
 liege
 lieges
 lien
@@ -12262,7 +12143,6 @@ limb
 limber
 limbers
 limbo
-limboed
 limbos
 limbs
 lime
@@ -12313,7 +12193,6 @@ linger
 lingers
 lingo
 lingoes
-lingos
 lingual
 lining
 linings
@@ -12369,7 +12248,6 @@ litchi
 litchis
 lite
 literal
-lites
 lithe
 lither
 lithest
@@ -12440,12 +12318,10 @@ lobby
 lobe
 lobed
 lobes
-lobing
 lobs
 lobster
 local
 locale
-localed
 locales
 locally
 locals
@@ -12619,7 +12495,6 @@ lover
 lovers
 loves
 loving
-lovings
 low
 lowbrow
 lowdown
@@ -12837,7 +12712,6 @@ malaria
 male
 males
 malice
-maliced
 malices
 malign
 maligns
@@ -12880,12 +12754,10 @@ mane
 manes
 manful
 mange
-manged
 manger
 mangers
 manges
 mangier
-manging
 mangle
 mangled
 mangles
@@ -12926,7 +12798,6 @@ mantis
 mantle
 mantled
 mantles
-mantoes
 mantra
 mantras
 manual
@@ -13122,10 +12993,8 @@ meadow
 meadows
 meagre
 meal
-mealed
 mealier
 mealies
-mealing
 meals
 mealy
 mean
@@ -13232,7 +13101,6 @@ mercies
 mercury
 mercy
 mere
-mered
 merely
 merer
 meres
@@ -13243,7 +13111,6 @@ merger
 mergers
 merges
 merging
-mering
 merino
 merinos
 merit
@@ -13255,7 +13122,6 @@ mermen
 merrier
 merrily
 merry
-mes
 mesa
 mesas
 mescal
@@ -13574,7 +13440,6 @@ model
 models
 modem
 modems
-moder
 modern
 moderns
 modes
@@ -13625,7 +13490,6 @@ moment
 moments
 momma
 mommas
-mommie
 mommies
 mommy
 moms
@@ -13705,7 +13569,6 @@ mores
 morgue
 morgues
 morn
-morned
 morning
 morns
 morocco
@@ -13725,7 +13588,6 @@ mortify
 mortise
 mosaic
 mosaics
-moses
 mosey
 moseyed
 moseys
@@ -13735,7 +13597,6 @@ moss
 mossed
 mosses
 mossier
-mossies
 mossing
 mossy
 most
@@ -13924,11 +13785,9 @@ musics
 musing
 musings
 musk
-musked
 musket
 muskets
 muskier
-musking
 muskrat
 musks
 musky
@@ -13980,13 +13839,11 @@ mynahs
 mynas
 myopia
 myopic
-myopics
 myriad
 myriads
 myrrh
 myrtle
 myrtles
-mys
 myself
 mystery
 mystic
@@ -14031,7 +13888,6 @@ named
 namely
 names
 naming
-nannied
 nannies
 nanny
 nap
@@ -14049,8 +13905,6 @@ napping
 nappy
 naps
 narc
-narced
-narcing
 narcs
 nark
 narked
@@ -14179,20 +14033,15 @@ new
 newbie
 newbies
 newborn
-newed
 newel
 newels
 newer
 newest
-newing
 newly
 newness
 news
 newsboy
-newsed
-newses
 newsier
-newsing
 newsman
 newsmen
 newsy
@@ -14320,7 +14169,6 @@ nomadic
 nomads
 nominal
 nominee
-non
 nonce
 noncom
 noncoms
@@ -14339,18 +14187,15 @@ nook
 nooks
 noon
 noonday
-nooned
 nooning
 noons
 noose
 nooses
 nope
-nopes
 nor
 norm
 normal
 normed
-norming
 norms
 north
 nose
@@ -14358,8 +14203,6 @@ nosed
 nosegay
 noses
 nosey
-noseyer
-noseys
 nosh
 noshed
 noshes
@@ -14421,7 +14264,6 @@ nubile
 nubs
 nuclear
 nuclei
-nucleic
 nucleus
 nude
 nuder
@@ -14620,7 +14462,6 @@ ogres
 ohm
 ohms
 oho
-ohos
 ohs
 oil
 oiled
@@ -14642,8 +14483,6 @@ okra
 okras
 old
 olden
-oldened
-oldens
 older
 oldest
 oldie
@@ -14671,9 +14510,7 @@ oneself
 onetime
 ongoing
 onion
-onioned
 onions
-onliest
 online
 only
 onrush
@@ -14689,7 +14526,6 @@ onyx
 onyxes
 oodles
 oops
-oopses
 ooze
 oozed
 oozes
@@ -14742,7 +14578,6 @@ opulent
 opus
 opuses
 oracle
-oracled
 oracles
 oral
 orally
@@ -14813,7 +14648,6 @@ other
 others
 otiose
 otter
-ottered
 otters
 ottoman
 ouch
@@ -15111,8 +14945,6 @@ papers
 papery
 papilla
 papoose
-papped
-papping
 paprika
 paps
 papyri
@@ -15433,7 +15265,6 @@ pens
 pension
 pensive
 pent
-pents
 penury
 peon
 peonage
@@ -15498,7 +15329,6 @@ pertain
 perter
 pertest
 pertly
-perts
 perturb
 perusal
 peruse
@@ -15537,7 +15367,6 @@ petrol
 pets
 petted
 pettier
-petties
 pettily
 petting
 petty
@@ -15588,7 +15417,6 @@ phonies
 phoning
 phony
 phooey
-phooeys
 photo
 photoed
 photon
@@ -15987,7 +15815,6 @@ pluses
 plush
 plusher
 plushy
-plussed
 plusses
 ply
 plying
@@ -16011,7 +15838,6 @@ podiums
 pods
 poem
 poems
-poesied
 poesies
 poesy
 poet
@@ -16176,11 +16002,8 @@ poses
 poseur
 poseurs
 posh
-poshed
 posher
-poshes
 poshest
-poshing
 posies
 posing
 posit
@@ -16326,7 +16149,6 @@ preps
 prequel
 presage
 present
-preses
 preset
 presets
 preside
@@ -16522,14 +16344,12 @@ prunes
 pruning
 pry
 prying
-prys
 psalm
 psalms
 pseudo
 pshaw
 pshaws
 psst
-pssts
 psych
 psyche
 psyched
@@ -16539,18 +16359,14 @@ psycho
 psychos
 psychs
 pub
-pubbed
-pubbing
 puberty
 pubic
 public
 publish
 pubs
 puck
-pucked
 pucker
 puckers
-pucking
 puckish
 pucks
 pudding
@@ -16650,26 +16466,22 @@ pupils
 pupped
 puppet
 puppets
-puppied
 puppies
 pupping
 puppy
 pups
 pure
-pured
 puree
 pureed
 purees
 purely
 purer
-pures
 purest
 purge
 purged
 purges
 purging
 purify
-puring
 purism
 purist
 purists
@@ -16750,9 +16562,7 @@ pyrite
 python
 pythons
 pyx
-pyxed
 pyxes
-pyxing
 qua
 quack
 quacked
@@ -16860,16 +16670,12 @@ quirks
 quirky
 quit
 quite
-quited
-quites
-quiting
 quits
 quitted
 quitter
 quiver
 quivers
 quiz
-quizes
 quizzed
 quizzes
 quoit
@@ -17395,7 +17201,6 @@ regaled
 regales
 regalia
 regally
-regals
 regard
 regards
 regatta
@@ -17467,7 +17272,6 @@ reloads
 rely
 relying
 remade
-remades
 remain
 remains
 remake
@@ -17669,7 +17473,6 @@ retreat
 retrial
 retried
 retries
-retrod
 retry
 return
 returns
@@ -17849,7 +17652,6 @@ rimming
 rims
 rind
 rinded
-rinding
 rinds
 ring
 ringed
@@ -17859,8 +17661,6 @@ ringing
 ringlet
 rings
 rink
-rinked
-rinking
 rinks
 rinse
 rinsed
@@ -17980,13 +17780,11 @@ rocky
 rococo
 rod
 rode
-roded
 rodent
 rodents
 rodeo
 rodeos
 rodes
-roding
 rods
 roe
 roebuck
@@ -18081,19 +17879,15 @@ rotate
 rotated
 rotates
 rote
-roted
 rotes
-roting
 rotor
 rotors
 rots
 rotted
 rotten
-rottens
 rotting
 rotund
 rotunda
-rotunds
 rouble
 roubles
 rouge
@@ -18172,9 +17966,7 @@ rubying
 ruckus
 rudder
 rudders
-ruddied
 ruddier
-ruddies
 ruddy
 rude
 rudely
@@ -18206,7 +17998,6 @@ ruins
 rule
 ruled
 ruler
-rulered
 rulers
 rules
 ruling
@@ -18225,8 +18016,6 @@ rummy
 rumour
 rumours
 rump
-rumped
-rumping
 rumple
 rumpled
 rumples
@@ -18286,9 +18075,7 @@ rutted
 rutting
 rye
 sable
-sabled
 sables
-sabling
 sabre
 sabres
 sac
@@ -18352,7 +18139,6 @@ saint
 saintly
 saints
 saith
-saiths
 sake
 salaam
 salaams
@@ -18406,7 +18192,6 @@ samba
 sambaed
 sambas
 same
-sames
 samovar
 sampan
 sampans
@@ -18441,7 +18226,6 @@ saner
 sanes
 sanest
 sang
-sangs
 saning
 sanity
 sank
@@ -18481,7 +18265,6 @@ sates
 satiate
 satiety
 satin
-satined
 sating
 satins
 satiny
@@ -18611,11 +18394,9 @@ scats
 scatted
 scatter
 scene
-scened
 scenery
 scenes
 scenic
-scening
 scent
 scented
 scents
@@ -18679,7 +18460,6 @@ scorn
 scorned
 scorns
 scotch
-scotchs
 scour
 scoured
 scourge
@@ -18946,7 +18726,6 @@ seraphs
 sere
 sered
 serene
-serened
 serener
 serenes
 serer
@@ -19205,7 +18984,6 @@ shirr
 shirred
 shirrs
 shirt
-shirted
 shirts
 shit
 shits
@@ -19413,7 +19191,6 @@ signify
 signing
 signs
 silage
-silaged
 silages
 silence
 silent
@@ -19422,7 +19199,6 @@ silica
 silicon
 silk
 silken
-silkens
 silkier
 silkies
 silks
@@ -19451,7 +19227,6 @@ simmers
 simper
 simpers
 simple
-simpled
 simpler
 simples
 simplex
@@ -19502,8 +19277,6 @@ sires
 siring
 sirloin
 sirocco
-sirred
-sirring
 sirs
 sirup
 sirups
@@ -19573,7 +19346,6 @@ skier
 skiers
 skies
 skiff
-skiffed
 skiffs
 skiing
 skilful
@@ -19727,7 +19499,6 @@ slickly
 slicks
 slid
 slide
-slided
 slider
 sliders
 slides
@@ -19785,7 +19556,6 @@ sloshed
 sloshes
 slot
 sloth
-slothed
 sloths
 slots
 slotted
@@ -19846,7 +19616,6 @@ smacked
 smacker
 smacks
 small
-smalled
 smaller
 smalls
 smarmy
@@ -19899,7 +19668,6 @@ smoker
 smokers
 smokes
 smokier
-smokies
 smoking
 smoky
 smooch
@@ -19912,11 +19680,9 @@ smudged
 smudges
 smudgy
 smug
-smugged
 smugger
 smuggle
 smugly
-smugs
 smut
 smuts
 smutty
@@ -19966,7 +19732,6 @@ sneezes
 snicker
 snide
 snider
-snides
 snidest
 sniff
 sniffed
@@ -20017,7 +19782,6 @@ snorted
 snorts
 snot
 snots
-snotted
 snotty
 snout
 snouted
@@ -20298,7 +20062,6 @@ sparked
 sparkle
 sparks
 sparred
-sparrer
 sparrow
 spars
 sparse
@@ -20510,7 +20273,6 @@ sprays
 spread
 spreads
 spree
-spreed
 sprees
 sprier
 spriest
@@ -20680,10 +20442,8 @@ stared
 stares
 staring
 stark
-starked
 starker
 starkly
-starks
 starlet
 starlit
 starred
@@ -20752,7 +20512,6 @@ steer
 steered
 steers
 stein
-steined
 steins
 stellar
 stem
@@ -20771,7 +20530,6 @@ stereos
 sterile
 stern
 sterna
-sterned
 sterner
 sternly
 sterns
@@ -20800,9 +20558,7 @@ stifles
 stigma
 stigmas
 stile
-stiled
 stiles
-stiling
 still
 stilled
 stiller
@@ -21168,13 +20924,11 @@ sunfish
 sung
 sunk
 sunken
-sunks
 sunlamp
 sunless
 sunlit
 sunned
 sunnier
-sunnies
 sunning
 sunny
 sunrise
@@ -21206,7 +20960,6 @@ sups
 sure
 surely
 surer
-sures
 surest
 surety
 surf
@@ -21324,7 +21077,6 @@ swerve
 swerved
 swerves
 swift
-swifted
 swifter
 swiftly
 swifts
@@ -21339,7 +21091,6 @@ swimmer
 swims
 swindle
 swine
-swines
 swing
 swinger
 swings
@@ -21370,7 +21121,6 @@ swop
 swopped
 swops
 sword
-sworded
 swords
 swore
 sworn
@@ -21428,7 +21178,6 @@ tacitly
 tack
 tacked
 tackier
-tackies
 tacking
 tackle
 tackled
@@ -21522,7 +21271,6 @@ tang
 tangelo
 tangent
 tangier
-tangies
 tangle
 tangled
 tangles
@@ -21660,18 +21408,14 @@ taxied
 taxies
 taxiing
 taxing
-taxings
 taxis
 taxying
 tea
-teabag
 teach
 teacher
 teaches
 teacup
 teacups
-teaed
-teaing
 teak
 teaks
 teal
@@ -21813,8 +21557,6 @@ termite
 termly
 terms
 tern
-terned
-terning
 terns
 terrace
 terrain
@@ -21862,9 +21604,6 @@ thaws
 the
 theatre
 thee
-theed
-theeing
-thees
 theft
 thefts
 their
@@ -21918,7 +21657,6 @@ thinned
 thinner
 thins
 third
-thirded
 thirdly
 thirds
 thirst
@@ -21968,7 +21706,6 @@ throaty
 throb
 throbs
 throe
-throed
 throes
 throne
 thrones
@@ -22124,7 +21861,6 @@ tinkled
 tinkles
 tinned
 tinnier
-tinnies
 tinning
 tinny
 tins
@@ -22161,7 +21897,6 @@ tired
 tireder
 tires
 tiring
-tirings
 tissue
 tissues
 tit
@@ -22178,12 +21913,9 @@ titles
 titling
 titmice
 tits
-titted
 titter
 titters
-titting
 tittle
-tittled
 tittles
 titular
 tizzies
@@ -22291,7 +22023,6 @@ toolbar
 toolbox
 tooled
 tooling
-toolkit
 tools
 toot
 tooted
@@ -22342,7 +22073,6 @@ tors
 torsi
 torsion
 torso
-torsoes
 torsos
 tort
 torte
@@ -22555,9 +22285,7 @@ trifles
 trig
 trigger
 trike
-triked
 trikes
-triking
 trill
 trilled
 trills
@@ -22587,7 +22315,6 @@ trisect
 trite
 tritely
 triter
-trites
 tritest
 triumph
 trivet
@@ -22597,7 +22324,6 @@ trivial
 trochee
 trod
 trodden
-trodes
 troika
 troikas
 troll
@@ -22684,7 +22410,6 @@ truth
 truths
 try
 trying
-tryings
 tryout
 tryouts
 tryst
@@ -22905,19 +22630,16 @@ tyred
 tyres
 tyring
 tyro
-tyroes
 tyros
 tzar
 tzars
 udder
 udders
 ugh
-uglied
 uglier
 uglies
 ugliest
 ugly
-uglying
 ukulele
 ulcer
 ulcered
@@ -22969,9 +22691,7 @@ unclasp
 uncle
 unclean
 unclear
-uncled
 uncles
-uncling
 uncoil
 uncoils
 uncork
@@ -23053,7 +22773,6 @@ unlearn
 unleash
 unless
 unlike
-unlikes
 unload
 unloads
 unlock
@@ -23095,7 +22814,6 @@ unroll
 unrolls
 unruly
 unsafe
-unsafer
 unsaid
 unsay
 unsays
@@ -23105,7 +22823,6 @@ unseals
 unseat
 unseats
 unseen
-unseens
 unsent
 unset
 unsnap
@@ -23124,8 +22841,6 @@ untie
 untied
 unties
 until
-untiled
-untiles
 unto
 untold
 untried
@@ -23228,8 +22943,6 @@ urinary
 urinate
 urine
 urn
-urned
-urning
 urns
 urology
 usable
@@ -23294,10 +23007,8 @@ vaginal
 vaginas
 vagrant
 vague
-vagued
 vaguely
 vaguer
-vagues
 vaguest
 vain
 vainer
@@ -23524,7 +23235,6 @@ victors
 victory
 victual
 video
-videoed
 videos
 vie
 vied
@@ -23624,8 +23334,6 @@ vitriol
 viva
 vivace
 vivaces
-vivaed
-vivaing
 vivas
 vivid
 vivider
@@ -23710,7 +23418,6 @@ vulvas
 vying
 wackier
 wacko
-wackoes
 wackos
 wacky
 wad
@@ -23830,7 +23537,6 @@ wangled
 wangles
 waning
 wanly
-wanna
 wannabe
 wanner
 wannest
@@ -23899,7 +23605,6 @@ warts
 warty
 wary
 was
-wases
 wash
 washed
 washer
@@ -24023,7 +23728,6 @@ weedier
 weeding
 weeds
 weedy
-weeing
 week
 weekday
 weekend
@@ -24043,8 +23747,6 @@ weest
 weevil
 weevils
 weft
-wefted
-wefting
 wefts
 weigh
 weighed
@@ -24060,8 +23762,6 @@ weirdly
 weirdo
 weirdos
 weirds
-weired
-weiring
 weirs
 welcome
 weld
@@ -24097,7 +23797,6 @@ went
 wept
 were
 west
-wested
 western
 westing
 wests
@@ -24144,14 +23843,12 @@ wheezed
 wheezes
 wheezy
 whelk
-whelked
 whelks
 whelp
 whelped
 whelps
 when
 whence
-whences
 whens
 where
 whereas
@@ -24166,8 +23863,6 @@ whether
 whets
 whetted
 whew
-whewed
-whewing
 whews
 whey
 which
@@ -24180,7 +23875,6 @@ whiles
 whiling
 whilst
 whim
-whimmed
 whimper
 whims
 whimsey
@@ -24212,7 +23906,6 @@ whisker
 whiskey
 whisks
 whisky
-whiskys
 whisper
 whist
 whistle
@@ -24292,7 +23985,6 @@ wiggler
 wiggles
 wiggly
 wight
-wighted
 wights
 wigs
 wigwag
@@ -24432,7 +24124,6 @@ withes
 within
 withing
 without
-withs
 witless
 witness
 wits
@@ -24551,10 +24242,8 @@ worthy
 wost
 wot
 would
-woulds
 wound
 wounded
-wounder
 wounds
 wove
 woven
@@ -24708,7 +24397,6 @@ yeses
 yeshiva
 yessed
 yessing
-yest
 yet
 yeti
 yew
@@ -24719,7 +24407,6 @@ yields
 yip
 yipped
 yippee
-yippees
 yipping
 yips
 yodel
@@ -24775,12 +24462,10 @@ yuppie
 yuppies
 yuppy
 yups
-zanied
 zanier
 zanies
 zaniest
 zany
-zanying
 zap
 zapped
 zapping
