@@ -514,13 +514,13 @@ checkGuess(char* answer, struct node* head)
     int foundWord = 0;
     char test[8];
     
+	memset(test, 0, sizeof(test));
 	len = nextBlank(answer) - 1;
-    if (len == -1) len = 8;
+    if (len == -1) len = sizeof(test);
 	for (i = 0; i < len; i++) {
         assert(i < sizeof(test));
 		test[i] = answer[i];
 	}
-	test[len] = '\0';
 #ifdef DEBUG
     printf("check guess len:%d answer:'%s' test:'%s'\n", len, answer, test);
 #endif
@@ -532,7 +532,7 @@ checkGuess(char* answer, struct node* head)
 				score += current->length;
 				totalScore += current->length;
 				answersGot++;
-				if (len == bigWordLen) {
+				if (len-1 == bigWordLen) {
 					gotBigWord = 1;
 					Mix_PlayChannel(-1, getSound("foundbig"), 0);
 				} else {
@@ -988,12 +988,13 @@ outputs: n/a
 static void
 shuffleWord(char *word)
 {
+    char tmp;
     int a, b, n;
     int count = (rand() % 7) + 20;
     for (n = 0; n < count; ++n) {
         a = rand() % 7;
         b = rand() % 7;
-        char tmp = word[a];
+        tmp = word[a];
         word[a] = word[b];
         word[b] = tmp;
     }
