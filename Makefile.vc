@@ -39,7 +39,7 @@ LINK=link
 
 !if $(DEBUG)
 OUTDIR =Debug
-CFLAGS =-Od -Zi -GZ -MDd -D_DEBUG
+CFLAGS =-Od -Zi -GZ -MDd -D_DEBUG -DDEBUG
 LDFLAGS=-debug:full -debugtype:cv
 !else
 OUTDIR =Release
@@ -72,10 +72,10 @@ TSTDIR =$(OUTDIR)\TestObjects
 CC     =$(CC) -nologo
 LD     =$(LINK) -nologo
 
-CFLAGS =$(CFLAGS) -W3
+CFLAGS =$(CFLAGS) -W3 -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE
 INC    =-I$(SDLDIR)/include
 DEFS   =-DWIN32 -DHAVE_OPENGL -Dmain=SDL_main
-LIBS   =-libpath:$(SDLDIR)/lib SDLmain.lib SDL.lib SDL_mixer.lib kernel32.lib
+LIBS   =-libpath:$(SDLDIR)/lib SDLmain.lib SDL.lib SDL_mixer.lib user32.lib kernel32.lib
 LDFLAGS=$(LDFLAGS) -subsystem:windows
 
 OBJS   = \

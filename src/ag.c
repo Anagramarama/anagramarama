@@ -58,6 +58,12 @@
  * -------------------------------------------------------------------
  */
 
+#ifdef WIN32
+#define STRICT
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif /* WIN32 */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -95,8 +101,8 @@ int solvePuzzle = 0;
 int shuffleRemaining = 0;
 int clearGuess = 0;
 
-int gameStart = 0;
-int gameTime = 0;
+time_t gameStart = 0;
+time_t gameTime = 0;
 int stopTheClock = 0;
 
 int totalScore = 0;
@@ -130,7 +136,42 @@ struct sound {
 };
 struct sound* soundCache = NULL;
 
+/*
+ * On Windows the standard IO channels are not connected to anything
+ * so we must use alternative methods to see error and debug output.
+ * On Unix we can just print the the standard error channel.
+ */
 
+#ifndef WIN32
+#define Debug Error
+static void Error(const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+    vfprintf(stderr, format, args);
+    fputc('\n', stderr);
+    va_end(args);
+}
+#else /* WIN32 */
+static void Error(const char *format, ...)
+{
+    va_list args;
+    char buffer[1024];
+    va_start(args, format);
+    _vsnprintf(buffer, sizeof(buffer), format, args);
+    buffer[sizeof(buffer)-1] = 0;
+    MessageBoxA(NULL, buffer, NULL, MB_OK | MB_ICONERROR);
+}
+static void Debug(const char *format, ...)
+{
+    va_list args;
+    char buffer[1024];
+    va_start(args, format);
+    _vsnprintf(buffer, sizeof(buffer), format, args);
+    buffer[sizeof(buffer)-1] = 0;
+    OutputDebugStringA(buffer);
+}
+#endif /* WIN32 */
 
 
 /***********************************************************
@@ -250,7 +291,7 @@ ShowBMP(const char *file, SDL_Surface *screen, int x, int y)
 	/* Load the BMP file into a surface */
 	image = SDL_LoadBMP(file);
 	if ( image == NULL ) {
-		fprintf(stderr, "Couldn't load %s: %s\n", file, SDL_GetError());
+		Error("Couldn't load %s: %s\n", file, SDL_GetError());
 		return;
 	}
 
@@ -416,7 +457,7 @@ checkGuess(char* answer, struct node* head)
 		test[i] = answer[i];
 	}
 #ifdef DEBUG
-    printf("check guess len:%d answer:'%s' test:'%s'\n", len, answer, test);
+    Debug("check guess len:%d answer:'%s' test:'%s'", len, answer, test);
 #endif
 
 	while (current != NULL) {
@@ -794,7 +835,7 @@ updateTime(SDL_Surface* screen)
 	torect.w = CLOCK_WIDTH;
 	torect.h = CLOCK_HEIGHT;
 
-	thisTime = AVAILABLE_TIME-gameTime;
+	thisTime = (int)((time_t)AVAILABLE_TIME - gameTime);
 	minutes = thisTime/60;
 	seconds = thisTime-(minutes*60);
 	minute_tens = minutes/10;
@@ -1215,8 +1256,8 @@ static void
 newGame(struct node** head, struct dlb_node* dlbHead, 
         SDL_Surface* screen, struct sprite** letters)
 {
-    char guess[8];
-    char remain[8];
+    char guess[9];
+    char remain[9];
     int happy = 0;   /* we don't want any more than ones with 66 answers */
                      /* - that's all we can show... */
     int i;
@@ -1249,14 +1290,14 @@ newGame(struct node** head, struct dlb_node* dlbHead,
 
 #ifdef DEBUG
 		if (!happy) {
-			printf("Too Many Answers!  word: %s, answers: %i\n",
+			Debug("Too Many Answers!  word: %s, answers: %i",
                    rootWord, answersSought);
 		}
 #endif
 	}
 
 #ifdef DEBUG
-    printf("Selected word: %s, answers: %i\n", rootWord, answersSought);
+    Debug("Selected word: %s, answers: %i", rootWord, answersSought);
 #endif
 
     /* now we have a good set of words - sort them alphabetically */
@@ -1343,7 +1384,7 @@ gameLoop(struct node **head, struct dlb_node *dlbHead,
 {
     int done=0;
     SDL_Event event;
-    int timeNow;
+    time_t timeNow;
     SDL_TimerID timer;
     int timer_delay = 20;
     
@@ -1358,7 +1399,7 @@ gameLoop(struct node **head, struct dlb_node *dlbHead,
 
 		if ((gameTime < AVAILABLE_TIME) && !stopTheClock) {
 			timeNow = time(0) - gameStart;
-			if (timeNow!=gameTime){
+			if (timeNow != gameTime){
 				gameTime = timeNow;
 				updateTime(screen);
 			}
@@ -1513,7 +1554,7 @@ main(int argc, char *argv[])
 	int audio_buffers = 256;
 
 	/* seed the random generator */
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 
 	/* identify the resource locale */
 	init_locale(argc, argv);
@@ -1521,28 +1562,28 @@ main(int argc, char *argv[])
 	/* create dictionary */
     strcpy(txt, language);
 	if (!dlb_create(&dlbHead, strcat(txt, "wordlist.txt"))) {
-        printf("failed to open word list file\n");
+        Error("failed to open word list file");
         exit(1);
     }
 
 	if (SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO|SDL_INIT_TIMER) < 0){
-		fprintf(stderr, "Unable to init SDL: %s\n", SDL_GetError());
+		Error("Unable to init SDL: %s", SDL_GetError());
 		exit(1);
 	}
 
 	atexit(SDL_Quit);
 
-	screen=SDL_SetVideoMode(800, 600, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
+	screen = SDL_SetVideoMode(800, 600, 16, SDL_HWSURFACE|SDL_DOUBLEBUF);
 	if (screen == NULL)
 	{
-		printf("Unable to set 800x600 video: %s\n", SDL_GetError());
+		Error("Unable to set 800x600 video: %s", SDL_GetError());
 		exit(1);
 	}
 
 	SDL_WM_SetCaption("Anagramarama", "ANAGRAMARAMA");
 
-	if(Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers)){
-		printf("unable to open audio!\n");
+	if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers)) {
+		Error("unable to open audio!");
 		exit(1);
 	}
 
