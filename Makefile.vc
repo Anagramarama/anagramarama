@@ -67,11 +67,12 @@ CP    = copy /y >NUL
 MAKENSIS = "C:\Program Files (x86)\NSIS\makensis.exe"
 
 TMPDIR =$(OUTDIR)\Objects
+TSTDIR =$(OUTDIR)\TestObjects
 
 CC     =$(CC) -nologo
 LD     =$(LINK) -nologo
 
-CFLAGS =$(CFLAGS) -W3 -YX -Fp$(TMPDIR)^\
+CFLAGS =$(CFLAGS) -W3
 INC    =-I$(SDLDIR)/include
 DEFS   =-DWIN32 -DHAVE_OPENGL -Dmain=SDL_main
 LIBS   =-libpath:$(SDLDIR)/lib SDLmain.lib SDL.lib SDL_mixer.lib kernel32.lib
@@ -79,6 +80,7 @@ LDFLAGS=$(LDFLAGS) -subsystem:windows
 
 OBJS   = \
         $(TMPDIR)\ag.obj \
+        $(TMPDIR)\ag_core.obj \
         $(TMPDIR)\dlb.obj \
         $(TMPDIR)\linked.obj \
         $(TMPDIR)\sprite.obj \
@@ -99,9 +101,31 @@ release: ag Anagramarama.nsi
 .PHONY: all ag release
 
 #-------------------------------------------------------------------------
+
+tests: test_agcore test_dlb test_linked
+test_ag: setup $(OUTDIR)\test_ag.exe
+test_dlb: setup $(OUTDIR)\test_dlb.exe
+test_agcore: setup $(OUTDIR)\test_agcore.exe
+test_linked: setup $(OUTDIR)\test_linked.exe
+
+$(OUTDIR)\test_ag.exe: $(SRCDIR)/ag_test.c
+	$(CC) $(CFLAGS) $(INC) -DUNIT_TEST -Fo$(TSTDIR)\ $** -link $(LDFLAGS) -subsystem:console -out:$@
+
+$(OUTDIR)\test_agcore.exe: $(SRCDIR)/ag_core.c $(TMPDIR)\dlb.obj $(TMPDIR)\linked.obj
+	$(CC) $(CFLAGS) $(INC) -DUNIT_TEST -Fo$(TSTDIR)\ $** -link $(LDFLAGS) -subsystem:console -out:$@
+
+$(OUTDIR)\test_linked.exe: $(SRCDIR)/linked.c
+	$(CC) $(CFLAGS) $(INC) -DUNIT_TEST -Fo$(TSTDIR)\ $** -link $(LDFLAGS) -subsystem:console -out:$@
+
+$(OUTDIR)\test_dlb.exe: $(SRCDIR)/dlb.c
+	$(CC) $(CFLAGS) $(INC) -DUNIT_TEST -Fo$(TSTDIR)\ $** -link $(LDFLAGS) -subsystem:console -out:$@
+
+
+#-------------------------------------------------------------------------
 setup:
 	@if not exist $(OUTDIR) mkdir $(OUTDIR)
 	@if not exist $(TMPDIR) mkdir $(TMPDIR)
+	@if not exist $(TSTDIR) mkdir $(TSTDIR)
 
 clean:
 	@if exist $(TMPDIR)\NUL $(RMDIR) $(TMPDIR) >NUL

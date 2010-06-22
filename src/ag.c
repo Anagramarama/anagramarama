@@ -58,8 +58,6 @@
  * -------------------------------------------------------------------
  */
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -77,12 +75,20 @@
 #define snprintf _snprintf
 #endif
 
+/* functions from ag_code.c */
+void ag(struct node **head, struct dlb_node *dlbHead, 
+        const char *guess, const char *remain);
+void getRandomWord(char *output, size_t length);
+int nextBlank(const char *string);
+
+
+
 /* module level variables for game control */
 char shuffle[8] = SPACE_FILLED_CHARS;
 char answer[8]  = SPACE_FILLED_CHARS;
 char language[64];
 char txt[50];
-char* rootWord;
+char rootWord[9];
 int updateAnswers = 0;
 int startNewGame = 0;
 int solvePuzzle = 0;
@@ -224,136 +230,6 @@ clearSoundBuffer()
 	}
 }
 
-/***********************************************************
-synopsis: determine the next blank space in a string 
-	  blanks are indicated by pound not space
-	  
-inputs:   pointer the string to check
-
-outputs:  returns position of next blank (1 is first character)
-	  or 0 if no blanks found
-***********************************************************/
-static int
-nextBlank(const char *string)
-{
-    const char *p = strchr(string, SPACE_CHAR);
-    if (p)
-        return 1 + (p - string);
-    return 0;
-}
-
-
-/***********************************************************
-synopsis: shift a string of characters 1 character to the left
-          truncating the leftmost character
-
-inputs:   pointer to string to shift
-
-outputs:  pointer to the shifted string
-***********************************************************/
-static char *
-shiftLeftKill(const char *string)
-{
-    return strdup(string + 1);
-}
-
-/***********************************************************
-synopsis: shift a string of characters 1 character to the left
-	  move the first character to the end of the string
-	  so it wraps around
-
-inputs:   pointer to string to shift
-
-outputs:  pointer to the shifted string
-***********************************************************/
-static char *
-shiftLeft(char *string)
-{
-    char c = *string;
-    char *p = string, *q = string+1;
-    for (; p && *p && q && *q; ) {
-        *p++ = *q++;
-    }
-    *p = c;
-    return string;
-}
-
-/***********************************************************
-synopsis: Generate all possible combinations of the root word
-	  the initial letter is fixed, so to work out all
-	  anagrams of a word, prefix with space.
-
-inputs:   head - pointer to the answers list
-	  dlbHead - pointer to the dictionary
-	  guess - pointer to the current guess
-	  remain - pointer to the remaining letters
-
-outputs:  all parameters are in/out
-***********************************************************/
-static void
-ag(struct node** head, struct dlb_node* dlbHead, 
-   const char* guess, const char* remain)
-{
-    char*  newGuess;
-    char*  newRemain;
-    int    totalLen=0, guessLen=0, remainLen=0;
-    
-	/* allocate space for our working variables */
-	guessLen = strlen(guess);
-	remainLen = strlen(remain);
-	totalLen = guessLen + remainLen;
-    
-	newGuess = malloc(sizeof(char) * (totalLen+1));
-	newRemain = malloc(sizeof(char) * (totalLen+1));
-    
-	/* move last remaining letter to end of guess */
-	strcpy(newGuess, guess);
-	strcpy(newRemain, remain);
-	newGuess[guessLen] = newRemain[remainLen-1];
-	newGuess[guessLen+1] = '\0';
-	newRemain[remainLen-1] = '\0';
-    
-	if (strlen(newGuess) > 3){
-        char *str = shiftLeftKill(newGuess);
-        if (dlb_lookup(dlbHead, str)) {
-            push(head, str);
-        }
-        free(str);
-	}
-
-	if (strlen(newRemain)) {
-        size_t i;
-		ag(head, dlbHead, newGuess, newRemain);
-
-		for (i = totalLen-1; i > 0; i--) {
-			if (strlen(newRemain) > i){
-                newRemain = shiftLeft(newRemain);
-                ag(head, dlbHead, newGuess, newRemain);
-			}
-		}
-	}
-	/* free the space */
-	free(newGuess);
-	free(newRemain);
-}
-
-/***********************************************************
-synopsis: update all of the answers to "found"
-
-inputs:   head - pointer to the answers linked list
-
-outputs:  n/a
-***********************************************************/
-static void
-solveIt(struct node *head)
-{
-    struct node* current = head;
-    
-	while (current != NULL){
-		current->found = 1;
-		current = current->next;
-	}
-}
 
 /***********************************************************
 synopsis: load the named image to position x,y onto the
@@ -487,6 +363,24 @@ displayAnswerBoxes(struct node* head, SDL_Surface* screen)
 	}
 }
 
+
+/***********************************************************
+synopsis: update all of the answers to "found"
+
+inputs:   head - pointer to the answers linked list
+
+outputs:  n/a
+***********************************************************/
+static void
+solveIt(struct node *head)
+{
+    struct node* current = head;
+    
+	while (current != NULL){
+		current->found = 1;
+		current = current->next;
+	}
+}
 
 
 
@@ -931,54 +825,6 @@ updateTime(SDL_Surface* screen)
 
 
 /***********************************************************
-synopsis: spin the word file to a random location and then
-	  loop until a 7 or 8 letter word is found
-	  this is quite a weak way to get a random word
-	  considering we've got a nice dbl Dictionary to
-	  hand - but it works for now.
-
-inputs: n/a
-
-outputs: a random word
-***********************************************************/
-static void
-getRandomWord(char *output, size_t length)
-{
-    FILE *fp;
-    struct stat statbuf;
-    char buffer[64];
-    
-    assert(length == 9);
-
-	strcpy(txt,language);
-    strcat(txt,"wordlist.txt");
-	fp = fopen(txt,"r");
-
-    stat(txt, &statbuf);
-    fseek(fp, (rand() % statbuf.st_size), SEEK_SET);
-    if (fscanf(fp, "%63s", buffer) == EOF)
-        fseek(fp, 0, SEEK_SET);
-
-	/* ok random location reached */
-	while (strlen(buffer) != 7) {
-        if (fscanf(fp, "%63s", buffer) == EOF) {
-            /* go back to the start of the file */
-            int i;
-            fseek(fp, 0L, SEEK_SET);
-            i = fscanf(fp, "%63s", buffer);
-            assert(i != EOF);
-		}
-	}
-	
-	fclose(fp);
-
-	/* add in our space character */
-    strcpy(output, buffer);
-    strcat(output, " ");
-	return;
-}
-
-/***********************************************************
 synopsis: replace characters randomly
 
 inputs: string to randomise (in/out)
@@ -1028,30 +874,26 @@ inputs: thisWord - the string to shuffle (in/out)
 outputs: n/a
 ***********************************************************/
 static void
-shuffleAvailableLetters(char** thisWord, struct sprite** letters)
+shuffleAvailableLetters(char *word, struct sprite **letters)
 {
     struct sprite *thisLetter = *letters;
     int from, to;
     char swap, posSwap;
-    char* shuffleChars;
-    char* shufflePos;
-    int i=0;
+    char shuffleChars[8];
+    char shufflePos[8];
+    int i = 0;
     int numSwaps;
 
-	shuffleChars = malloc(sizeof(char) * 8);
-	shufflePos = malloc(sizeof(char) * 8);
-
-	for(i=0;i<7;i++){
-		shufflePos[i]=i+1;
+	for (i = 0; i < 7; i++) {
+		shufflePos[i] = i + 1;
 	}
 	shufflePos[7] = '\0';
 
-	strcpy(shuffleChars, *thisWord);
-
+	strcpy(shuffleChars, word);
 
 	numSwaps = rand()%10+20;
 
-	for (i=0;i<numSwaps;i++){
+	for (i = 0; i < numSwaps; i++) {
 		from = rand()%7;
 		to = rand()%7;
 
@@ -1064,8 +906,8 @@ shuffleAvailableLetters(char** thisWord, struct sprite** letters)
 		shufflePos[to] = posSwap;
 	}
 
-	while(thisLetter != NULL){
-		if (thisLetter->box == SHUFFLE){
+	while (thisLetter != NULL) {
+		if (thisLetter->box == SHUFFLE) {
 			thisLetter->toX = (whereinstr(shufflePos, (char)(thisLetter->index+1)) * (GAME_LETTER_WIDTH + GAME_LETTER_SPACE)) + BOX_START_X;
 			thisLetter->index = whereinstr(shufflePos, (char)(thisLetter->index+1));
 		}
@@ -1073,10 +915,7 @@ shuffleAvailableLetters(char** thisWord, struct sprite** letters)
 		thisLetter = thisLetter->next;
 	}
 
-	strcpy(*thisWord, shuffleChars);
-
-	free(shuffleChars);
-	free(shufflePos);
+	strcpy(word, shuffleChars);
 }
 
 
@@ -1376,8 +1215,8 @@ static void
 newGame(struct node** head, struct dlb_node* dlbHead, 
         SDL_Surface* screen, struct sprite** letters)
 {
-    char* guess;
-    char* remain;
+    char guess[8];
+    char remain[8];
     int happy = 0;   /* we don't want any more than ones with 66 answers */
                      /* - that's all we can show... */
     int i;
@@ -1389,16 +1228,13 @@ newGame(struct node** head, struct dlb_node* dlbHead,
 	destroyLetters(letters);
     assert(*letters == NULL);
 
-	guess = malloc(sizeof(char)*50);
-	remain = malloc(sizeof(char)*50);
-
 	while (!happy) {
         char buffer[9];
         getRandomWord(buffer, sizeof(buffer));
 		strcpy(guess,"");
 		strcpy(rootWord, buffer);
 		bigWordLen = strlen(rootWord)-1;
-		strcpy(remain,rootWord);
+		strcpy(remain, rootWord);
 
 		rootWord[bigWordLen] = '\0';
 
@@ -1407,8 +1243,6 @@ newGame(struct node** head, struct dlb_node* dlbHead,
 
 		/* generate anagrams from random word */
 		ag(head, dlbHead, guess, remain);
-
-        sort(head);
 
 		answersSought = Length(*head);
 		happy = ((answersSought <= 77) && (answersSought >= 6));
@@ -1424,22 +1258,18 @@ newGame(struct node** head, struct dlb_node* dlbHead,
 #ifdef DEBUG
     printf("Selected word: %s, answers: %i\n", rootWord, answersSought);
 #endif
+
     /* now we have a good set of words - sort them alphabetically */
-    //sort(head);
+    sort(head);
 
 	for (i = bigWordLen; i < 7; i++){
 		remain[i] = SPACE_CHAR;
 	}
-
 	remain[7] = '\0';
-
 	remain[bigWordLen]='\0';
 
 	shuffleWord(remain);
 	strcpy(shuffle, remain);
-
-	free(guess);
-	free(remain);
 
 	strcpy(answer, SPACE_FILLED_STRING);
 
@@ -1532,8 +1362,7 @@ gameLoop(struct node **head, struct dlb_node *dlbHead,
 				gameTime = timeNow;
 				updateTime(screen);
 			}
-		}
-		else{
+		} else {
 			if (!stopTheClock){
 				stopTheClock = 1;
 				solvePuzzle = 1;
@@ -1566,7 +1395,7 @@ gameLoop(struct node **head, struct dlb_node *dlbHead,
 			updateAnswers = 0;
 		}
 
-		if(startNewGame){
+		if (startNewGame) {
 			/* move letters back down again */
 			if (!gotBigWord){
 				totalScore = 0;
@@ -1576,40 +1405,33 @@ gameLoop(struct node **head, struct dlb_node *dlbHead,
 			startNewGame = 0;
 		}
 
-		if(updateTheScore){
+		if (updateTheScore) {
 			updateScore(screen);
-
 			updateTheScore = 0;
 		}
 
-		if (shuffleRemaining){
+		if (shuffleRemaining) {
 			/* shuffle up the shuffle box */
-			char *shuffler;
-			shuffler = malloc(sizeof(char) * 8);
+			char shuffler[8];
 			strcpy(shuffler, shuffle);
-			shuffleAvailableLetters(&shuffler, letters);
+			shuffleAvailableLetters(shuffler, letters);
 			strcpy(shuffle, shuffler);
-			free(shuffler);
-			/* clearLetters(screen); */
-			/* displayLetters(screen); */
-
 			shuffleRemaining = 0;
 		}
 
-		if (clearGuess){
+		if (clearGuess) {
 			/* clear the guess; */
-			if (clearWord(letters) > 0)
+			if (clearWord(letters) > 0) {
 				Mix_PlayChannel(-1, getSound("clear"),0);
-
+            }
 			clearGuess = 0;
 		}
 
-		if (quitGame){
-			done=1;
+		if (quitGame) {
+			done = 1;
 		}
 
-		while (SDL_WaitEvent(&event))
-		{
+		while (SDL_WaitEvent(&event)) {
 			if (event.type == SDL_USEREVENT) {
                 timer_delay = anySpritesMoving(letters) ? 10 : 100;
                 moveSprites(&screen, letters, letterSpeed);
@@ -1734,13 +1556,11 @@ main(int argc, char *argv[])
 	strcpy(txt, language);
 	numberBank = SDL_LoadBMP(strcat(txt,"images/numberBank.bmp"));
 
-	rootWord = malloc(sizeof(char)*9);
 	newGame(&head, dlbHead, screen, &letters);
 
 	gameLoop(&head, dlbHead, screen, &letters);
 
 	/* tidy up and exit */
-	free(rootWord);
 	Mix_CloseAudio();
 	clearSoundBuffer(&soundCache);
 	dlb_free(dlbHead);

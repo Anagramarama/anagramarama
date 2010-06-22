@@ -173,7 +173,7 @@ dlb_lookup(struct dlb_node *head, const char *word)
 #ifdef UNIT_TEST
 #include "unittest.h"
 
-static int test_dlb()
+static int test_dlb(void *clientData)
 {
     struct dlb_node *head = NULL;
     test_equals_int("check code for bad file", 0,

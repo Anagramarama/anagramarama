@@ -151,7 +151,7 @@ push(struct node **headRef, const char *anagram)
 #ifdef UNIT_TEST
 #include "unittest.h"
 
-static int test_list_creation()
+static int test_list_creation(void *clientData)
 {
     struct node *head = NULL, *node = NULL;
     const char *words[] = {"one", "two", "three", "four", "five" };
@@ -166,7 +166,7 @@ static int test_list_creation()
     for (node = head, n = word_count; node; --n, node = node->next) {
         if (strcmp(words[n-1], node->anagram) != 0)
             test_fail("incorrect node value");
-        if (strlen(words[n-1]) != node->length)
+        if (strlen(words[n-1]) != (size_t)node->length)
             test_fail("incorrect node value length");
     }
     

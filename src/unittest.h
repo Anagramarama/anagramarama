@@ -91,6 +91,10 @@ static int fail_count = 0;
 
 #define RUN(what) printf("\t%s\n", what); test_count++;
 
+static void test_pass(const char *what)
+{
+    RUN(what);
+}
 static void test_fail(const char *what)
 {
     printf("\tFAIL: %s\n", what);
