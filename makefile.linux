@@ -2,12 +2,16 @@
 
 CC=gcc
 LD=gcc
-CFLAGS  =-g -Wall `sdl-config --cflags`
+CFLAGS  =-Wall `sdl-config --cflags`
 CFLAGS +=-O9 -funroll-loops -fomit-frame-pointer
 LDFLAGS=`sdl-config --libs` -lSDL_mixer
 
-C_FILES=src/dlb.c src/linked.c src/sprite.c src/ag.c
-OBJ_FILES=src/dlb.o src/linked.o src/sprite.o src/ag.o
+ifdef DEBUG
+CFLAGS +=-g -DDEBUG -D_DEBUG
+endif
+
+C_FILES=src/dlb.c src/linked.c src/sprite.c src/ag_core.c src/ag.c
+OBJ_FILES=src/dlb.o src/linked.o src/sprite.o src/ag_core.o src/ag.o
 TEST_OBJS=$(OBJ_FILES:src/ag.o=src/ag_test.o)
 
 all:ag
@@ -18,25 +22,21 @@ ag: $(OBJ_FILES)
 ag_test: $(TEST_OBJS)
 	$(LD) $(LDFLAGS) -o $@ $^
 
-src/dlb.o: src/dlb.c
-	$(CC) $(CFLAGS) -c -o $@ $^
-
-src/linked.o: src/linked.c
-	$(CC) $(CFLAGS) -c -o $@ $^
-
-src/sprite.o: src/sprite.c
-	$(CC) $(CFLAGS) -c -o $@ $^
-
-src/ag.o: src/ag.c
+%.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
 src/ag_test.o: src/ag_test.c
 	$(CC) $(CFLAGS) -DUNIT_TEST -c -o $@ $^
+src/agcore_test.o: src/ag_core.c
+	$(CC) $(CFLAGS) -DUNIT_TEST -c -o $@ $^
 
-tests: test_ag test_linked test_dlb
+tests: test_ag test_agcore test_linked test_dlb
 
 test_ag: ag $(TEST_OBJS) src/unittest.h
 	$(LD) $(LDFLAGS) -o $@ $(TEST_OBJS)
+
+test_agcore: src/agcore_test.o src/dlb.o src/linked.o src/unittest.h
+	$(LD) $(LDFLAGS) -o $@ $^
 
 test_linked: src/linked.c src/unittest.h
 	$(CC) $(CFLAGS) -Isrc -DUNIT_TEST $< -o $@
@@ -46,4 +46,4 @@ test_dlb: src/dlb.c src/unittest.h
 
 clean:
 	rm -f src/*.o
-	rm -f test_linked test_ag
+	rm -f test_ag test_agcore test_dlb test_linked

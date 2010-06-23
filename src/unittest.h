@@ -69,6 +69,7 @@ typedef unsigned __int64 uint64_t;
 #else
 #define NOWARN
 #endif
+static void test_pass(const char *what) NOWARN;
 static void test_equals_int(const char *what, const int a, const int b) NOWARN;
 static void test_equals_wide(const char *what, const uint64_t a, const uint64_t b) NOWARN;
 static void test_equals_ptr(const char *what, const void *a, const void *b) NOWARN;
