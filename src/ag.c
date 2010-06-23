@@ -1492,6 +1492,21 @@ gameLoop(struct node **head, struct dlb_node *dlbHead,
     }
 }
 
+static int
+is_valid_locale(const char *path)
+{
+    FILE *fp = NULL;
+    char buffer[260];
+    strcpy(buffer, path);
+    if (buffer[strlen(buffer)-1] != '/')
+        strcat(buffer, "/");
+    strcat(buffer, "wordlist.txt");
+    if ((fp = fopen(buffer, "r")) != NULL)
+        fclose(fp);
+    Debug("testing %s: %s", buffer, (fp == NULL)?"failed":"present");
+    return (fp != NULL);
+}
+
 /*
  * Get the current language string from either the environment or
  * the command line. This is used to location the wordlist and
@@ -1503,29 +1518,54 @@ gameLoop(struct node **head, struct dlb_node *dlbHead,
 static void
 init_locale(int argc, char *argv[])
 {
+    char *lang = NULL, *p = NULL;
+
 	strcpy(language,"i18n/");
 	if (argc == 2) {
 		strcat(language, argv[1]);
-	} else {
-		char * language2 = getenv("LANG");
-	
-		if (language2 == 0) {
-			strcpy(language,"i18n/en_GB/");
-		} else {
-			char local[10];
-			int len = strlen(language2);
-			int i = 0;
-			
-			while((language2[i] != '.')&&(i< len)){
-				local[i] = language2[i];
-				i++;
-			}
-			local[i] = '\0';
-
-			strcat(language,local);
-		}
+        if (is_valid_locale(language))
+            return;
 	}
-	strcat(language, "/");
+
+    lang = getenv("LANG");
+    if (lang != NULL) {
+        strcpy(language,"i18n/");
+        strcat(language, lang);
+        if (is_valid_locale(language))
+            return;
+        while ((p = strrchr(language, '.')) != NULL) {
+            *p = 0;
+            if (is_valid_locale(language))
+                return;
+        }
+        if ((p = strrchr(language, '_')) != NULL) {
+            *p = 0;
+            if (is_valid_locale(language))
+                return;
+        }
+    }
+
+#ifdef WIN32
+    {
+        LCID lcid = GetThreadLocale();
+        strcpy(language,"i18n/");
+        GetLocaleInfoA(lcid, LOCALE_SISO639LANGNAME, 
+                       language + strlen(language), sizeof(language));
+        p = language + strlen(language);
+        strcat(language, "_");
+        GetLocaleInfo(lcid, LOCALE_SISO3166CTRYNAME, 
+                      language + strlen(language), sizeof(language));
+        Debug("locale %s", language);
+        if (is_valid_locale(language))
+            return;
+        *p = 0;
+        if (is_valid_locale(language))
+            return;
+    }
+#endif /* WIN32 */
+
+    /* last resort - use the english locale */
+    strcpy(language, DEFAULT_LOCALE_PATH);
 }
 
 /***********************************************************
@@ -1558,6 +1598,8 @@ main(int argc, char *argv[])
 
 	/* identify the resource locale */
 	init_locale(argc, argv);
+    if (language[strlen(language)-1] != '/')
+        strcat(language, "/");
 
 	/* create dictionary */
     strcpy(txt, language);
