@@ -87,7 +87,18 @@ void ag(struct node **head, struct dlb_node *dlbHead,
 void getRandomWord(char *output, size_t length);
 int nextBlank(const char *string);
 
-
+enum Hotboxes { BoxSolve, BoxNew, BoxQuit, BoxShuffle, BoxEnter, BoxClear };
+const char *BoxNames[] = {
+	"solve", "new", "quit", "shuffle", "enter", "clear"
+};
+Box hotbox[6] = {
+  /* BoxSolve */   { 612, 0, 66, 30 },
+  /* BoxNew */     { 686, 0, 46, 30 },
+  /* BoxQuit */    { 742, 0, 58, 30 },
+  /* BoxShuffle */ { 618, 206, 66, 16 },
+  /* BoxEnter */   { 690, 254, 40, 35 },
+  /* BoxClear */   { 690, 304, 40, 40 }
+};
 
 /* module level variables for game control */
 char shuffle[8] = SPACE_FILLED_CHARS;
@@ -616,7 +627,11 @@ handleKeyboardEvent(SDL_Event *event, struct node* head,
 	}
 }
 
-
+static int IsInside(Box box, int x, int y)
+{
+	return ((x > box.x) && x < (box.x + box.width)
+		&& (y > box.y) && (y < box.y + box.height));
+}
 
 
 /***********************************************************
@@ -679,35 +694,34 @@ clickDetect(int button, int x, int y, SDL_Surface *screen,
 			current=current->next;
 		}
 
-		if (x > CLEARBOXSTARTX && x < CLEARBOXLENGTH+CLEARBOXSTARTX && y > CLEARBOXSTARTY && y < CLEARBOXSTARTY+CLEARBOXHEIGHT){
+		if (IsInside(hotbox[BoxClear], x, y)) {
 			/* clear has been pressed */
 			clearGuess = 1;
 		}
 
 		/* check the other hotspots */
-		if (x > ENTERBOXSTARTX && x < ENTERBOXLENGTH+ENTERBOXSTARTX && y > ENTERBOXSTARTY && y < ENTERBOXSTARTY+ENTERBOXHEIGHT){
+		if (IsInside(hotbox[BoxEnter], x, y)) {
 			/* enter has been pressed */
 			checkGuess(answer, head);
 		}
-
-		if (x > SOLVEBOXSTARTX && x < SOLVEBOXLENGTH+SOLVEBOXSTARTX && y > SOLVEBOXSTARTY && y < SOLVEBOXSTARTY+SOLVEBOXHEIGHT){
+		if (IsInside(hotbox[BoxSolve], x, y)) {
 			/* solve has been pressed */
 			solvePuzzle = 1;
 		}
 		
-		if (x > SHUFFLEBOXSTARTX && x < SHUFFLEBOXLENGTH+SHUFFLEBOXSTARTX && y > SHUFFLEBOXSTARTY && y < SHUFFLEBOXSTARTY+SHUFFLEBOXHEIGHT){
+		if (IsInside(hotbox[BoxShuffle], x, y)) {
 			/* shuffle has been pressed */
 			shuffleRemaining = 1;
 			Mix_PlayChannel(-1, getSound("shuffle"),0);
 		}
 	}
 
-	if (x > NEWBOXSTARTX && x < NEWBOXLENGTH+NEWBOXSTARTX && y > NEWBOXSTARTY && y < NEWBOXSTARTY+NEWBOXHEIGHT){
+	if (IsInside(hotbox[BoxNew], x, y)) {
 		/* new has been pressed */
 		startNewGame = 1;
 	}
 
-	if (x > QUITBOXSTARTX && x < QUITBOXLENGTH+QUITBOXSTARTX && y > QUITBOXSTARTY && y < QUITBOXSTARTY+QUITBOXHEIGHT){
+	if (IsInside(hotbox[BoxQuit], x, y)) {
 		/* new has been pressed */
 		quitGame = 1;
 	}
@@ -1495,16 +1509,66 @@ gameLoop(struct node **head, struct dlb_node *dlbHead,
 static int
 is_valid_locale(const char *path)
 {
-    FILE *fp = NULL;
-    char buffer[260];
-    strcpy(buffer, path);
-    if (buffer[strlen(buffer)-1] != '/')
-        strcat(buffer, "/");
-    strcat(buffer, "wordlist.txt");
-    if ((fp = fopen(buffer, "r")) != NULL)
-        fclose(fp);
-    Debug("testing %s: %s", buffer, (fp == NULL)?"failed":"present");
-    return (fp != NULL);
+	FILE *fp = NULL;
+	char buffer[260];
+	strcpy(buffer, path);
+	if (buffer[strlen(buffer)-1] != '/')
+		strcat(buffer, "/");
+	strcat(buffer, "wordlist.txt");
+	if ((fp = fopen(buffer, "r")) != NULL)
+		fclose(fp);
+	Debug("testing %s: %s", buffer, (fp == NULL)?"failed":"present");
+	return (fp != NULL);
+}
+
+/*
+ * parse a config line eg: solve = 555 30 76 20
+ */
+static int
+configBox(Box *pbox, const char *line)
+{
+	int x, y, w, h;
+	const char *p = strchr(line, '=');
+	if (p && sscanf(p+1, "%d %d %d %d", &x, &y, &w, &h) == 4) {
+		pbox->x = x;
+		pbox->y = y;
+		pbox->width = w;
+		pbox->height = h;
+		return 1;
+	}
+	return 0;
+}
+
+/*
+ * read any locale-specific configuration information from an ini
+ * ini file. This can reconfigure the positions of the boxes to account
+ * for different word sizes or alternative background layouts
+ */
+static void
+loadConfig(const char *path)
+{
+	FILE *fp = NULL;
+	char line[80], *p;
+	if ((fp = fopen(path, "r")) != NULL) {
+		Debug("loading configuration from %s", path);
+		while (!feof(fp)) {
+			if ((p = fgets(line, sizeof(line), fp)) != NULL) {
+				int i;
+				while (*p && isspace(*p))
+					++p;
+				if (*p == 0 || *p == ';')
+					continue;
+
+				for (i = 0; i < sizeof(BoxNames)/sizeof(BoxNames[0]); ++i) {
+					if (strncmp(BoxNames[i], p, strlen(BoxNames[i])) == 0) {
+						configBox(&hotbox[i], p);
+						break;
+					}
+				}
+			}
+		}
+		fclose(fp);
+	}
 }
 
 /*
@@ -1638,6 +1702,9 @@ main(int argc, char *argv[])
 	smallLetterBank = SDL_LoadBMP(strcat(txt,"images/smallLetterBank.bmp"));
 	strcpy(txt, language);
 	numberBank = SDL_LoadBMP(strcat(txt,"images/numberBank.bmp"));
+	/* load locale specific configuration */
+	strcpy(txt, language);
+	loadConfig(strcat(txt, "config.ini"));
 
 	newGame(&head, dlbHead, screen, &letters);
 
@@ -1656,3 +1723,11 @@ main(int argc, char *argv[])
 	/*SDL_Quit(); */
 	return 0;
 }
+
+/*
+ * Local variables:
+ * mode: c
+ * indent-tabs-mode: t
+ * tab-width: 4
+ * End:
+ */

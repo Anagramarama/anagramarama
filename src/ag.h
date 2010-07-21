@@ -23,6 +23,13 @@ Contact Details: colm@coralquest.com
 // ASCII OFFSET to convert a number to it's character equivalent
 #define NUM_TO_CHAR 48
 
+typedef struct Box {
+	int x;
+	int y;
+	int width;
+	int height;
+} Box;
+
 // pixel locations of boxes
 #define SHUFFLEBOX 110
 #define ANSWERBOX 245
@@ -38,42 +45,6 @@ Contact Details: colm@coralquest.com
 #define ANSWER 1
 #define SHUFFLE 2
 #define CONTROLS 3
-
-// enter button size and position
-#define ENTERBOXSTARTX 690
-#define ENTERBOXLENGTH 40
-#define ENTERBOXSTARTY 254
-#define ENTERBOXHEIGHT 35
-
-// clear button size and position
-#define CLEARBOXSTARTX 690
-#define CLEARBOXLENGTH 40
-#define CLEARBOXSTARTY 304
-#define CLEARBOXHEIGHT 40
-
-// shuffle button size and position
-#define SHUFFLEBOXSTARTX 618
-#define SHUFFLEBOXLENGTH 66
-#define SHUFFLEBOXSTARTY 206
-#define SHUFFLEBOXHEIGHT 16
-
-// solve button size and position
-#define SOLVEBOXSTARTX 612
-#define SOLVEBOXLENGTH 66
-#define SOLVEBOXSTARTY 0
-#define SOLVEBOXHEIGHT 30
-
-// new button size and position
-#define NEWBOXSTARTX 686
-#define NEWBOXLENGTH 46
-#define NEWBOXSTARTY 0
-#define NEWBOXHEIGHT 30
-
-// quit button size and position
-#define QUITBOXSTARTX 742
-#define QUITBOXLENGTH 58
-#define QUITBOXSTARTY 0
-#define QUITBOXHEIGHT 30
 
 // define the clock position and character width
 #define CLOCK_X 690
