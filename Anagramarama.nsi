@@ -25,11 +25,12 @@
 ;;
 ;; -------------------------------------------------------------------------
 
-!include "MUI.nsh"
+!include "MUI2.nsh"
+!include "LangFile.nsh"
 
 !define AG_RELEASE_MAJOR 0
 !define AG_RELEASE_MINOR 3
-!define AG_RELEASE_PATCH 1
+!define AG_RELEASE_PATCH 2
 
 Name "Anagramarama"
 OutFile "Anagramarama${AG_RELEASE_MAJOR}${AG_RELEASE_MINOR}.exe"
@@ -52,16 +53,8 @@ VIAddVersionKey FileVersion ${AG_RELEASE_MAJOR}.${AG_RELEASE_MINOR}.0.${AG_RELEA
 VIAddVersionKey ProductVersion ${AG_RELEASE_MAJOR}.${AG_RELEASE_MINOR}.0.0"
 VIAddVersionKey ProductName "Anagramarama"
 VIAddVersionKey CompanyName "Colm Gallagher"
-VIAddVersionKey LegalCopyright "Copyright (c) Colm Gallagher"
+VIAddVersionKey LegalCopyright "Copyright (c) Colm Gallagher et al."
 VIAddVersionKey FileDescription "Anagramarama Installer"
-
-;; -------------------------------------------------------------------------
-;; Language strings
-;;
-LangString DESC_SecMain ${LANG_ENGLISH}  "Install program files and English resources (required)."
-LangString DESC_SecMenu ${LANG_ENGLISH}  "Create Start menu items."
-LangString DESC_FinishPageText ${LANG_ENGLISH} "Successfully installed Anagramarama."
-LangString DESC_SecLangPt ${LANG_ENGLISH} "Include Portugese language support."
 
 ;; -------------------------------------------------------------------------
 ;; Interface Settings
@@ -85,6 +78,36 @@ LangString DESC_SecLangPt ${LANG_ENGLISH} "Include Portugese language support."
 !insertmacro MUI_UNPAGE_INSTFILES
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE "True"
 !insertmacro MUI_UNPAGE_FINISH
+
+;; Specify languages supported
+!insertmacro MUI_LANGUAGE "English"
+!insertmacro MUI_LANGUAGE "French"
+;;!insertmacro MUI_LANGUAGE "PortugueseBR"
+
+!insertmacro MUI_RESERVEFILE_LANGDLL
+
+;; -------------------------------------------------------------------------
+;; Language strings
+;;
+;; NSIS stupidly doesn't actually support unicode or utf-8 input files so we
+;; will have trouble with characters than cannot be represented in cp1252 (like
+;; russian). It looks like you might include a separate language file using
+;; !insertmacro LANGFILE_INCLUDE "ru.nsh" but something was failing when I
+;; tried this. In the meantime just plug them straight in here...
+;;
+;; English ------
+LangString DESC_SecMain ${LANG_ENGLISH}  "Install program files and English resources (required)."
+LangString DESC_SecMenu ${LANG_ENGLISH}  "Create Start menu items."
+LangString DESC_FinishPageText ${LANG_ENGLISH} "Successfully installed Anagramarama."
+LangString DESC_SecLangFr ${LANG_ENGLISH} "Include French language support."
+LangString DESC_SecLangPtBr ${LANG_ENGLISH} "Include Brazilian language support."
+;; French -------
+LangString DESC_SecMain ${LANG_FRENCH}  "Les fichiers programme d'installation et de ressources en Anglais (obligatoire)."
+LangString DESC_SecMenu ${LANG_FRENCH}  "Créer des éléments du menu Démarrer."
+LangString DESC_FinishPageText ${LANG_FRENCH} "Installé avec succès Anagramarama."
+LangString DESC_SecLangFr ${LANG_FRENCH} "Inclure le soutien de langue Française."
+LangString DESC_SecLangPtBr ${LANG_FRENCH} "Inclure le soutien de langue Brésilienne."
+
 
 ;; -------------------------------------------------------------------------
 ;; Installer Sections
@@ -113,7 +136,12 @@ Section "Start Menu" SecMenu
     CreateShortCut "$SMPROGRAMS\Anagramarama\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\Uninstall.exe" 0
 SectionEnd
 
-Section /o "Portugese" SecLangPt
+Section /o "French" SecLangFr
+    SetOutPath "$INSTDIR\i18n"
+    File /r "i18n\fr"
+SectionEnd
+
+Section /o "Brazilian" SecLangPtBr
     SetOutPath "$INSTDIR\i18n"
     File /r "i18n\pt_BR"
 SectionEnd
@@ -131,18 +159,19 @@ SectionEnd
  
 ;; -------------------------------------------------------------------------
 ;; Assign language strings to sections
+
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SecMain}   $(DESC_SecMain)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecMenu}   $(DESC_SecMenu)
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecLangPt} $(DESC_SecLangPt)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecLangFr} $(DESC_SecLangFr)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecLangPtBr} $(DESC_SecLangPtBr)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
-
-!insertmacro MUI_LANGUAGE "English"
-;;!insertmacro MUI_LANGUAGE "PortugueseBR" ;; requires pt_BR translations above
 
 ;; -------------------------------------------------------------------------
 ;; Initialize variables
 ;;
 Function .onInit
+  ;; Language selection.
+  ;;!insertmacro MUI_LANGDLL_DISPLAY
 FunctionEnd
 
