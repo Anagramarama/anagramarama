@@ -29,8 +29,8 @@
 !include "LangFile.nsh"
 
 !define AG_RELEASE_MAJOR 0
-!define AG_RELEASE_MINOR 3
-!define AG_RELEASE_PATCH 2
+!define AG_RELEASE_MINOR 4
+!define AG_RELEASE_PATCH 0
 
 Name "Anagramarama"
 OutFile "Anagramarama${AG_RELEASE_MAJOR}${AG_RELEASE_MINOR}.exe"

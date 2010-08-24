@@ -1,12 +1,16 @@
-Anagramarama 0.2
-(c) 2003-2007 Colm Gallagher - under the terms of the GPL - see gpl.txt for details.
+Anagramarama
 
 Version 0.1 -   still needs a high score table and some
 		informational messages, but you can play a game.
+
 Version 0.2 -   Added keyboard support and the scrabble wordlist
 
 Version 0.3 -   Added internationalisation, portuguese is the first available
                 language, many more to follow!
 
---
-colm@coralquest.com
+Version 0.4 -   Numerous bug-fixes and French support.
+
+
+Copyright (c) 2003-2010 Colm Gallagher et al.
+
+Licensed under the terms of the GPL - see gpl.txt for details.
