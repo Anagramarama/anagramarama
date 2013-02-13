@@ -584,22 +584,45 @@ handleKeyboardEvent(SDL_Event *event, struct node* head,
 {
     struct sprite* current = *letters;
     char keyedLetter;
+	int maxIndex = 0;
 
 	keyedLetter = event->key.keysym.sym;
-
+	
 	if (!gamePaused){
 
 		switch(keyedLetter){
 
-			case SDLK_BACKSPACE: case SDLK_ESCAPE:
+			case SDLK_ESCAPE:
 				/* clear has been pressed */
 				clearGuess = 1;
 				break;
 
+			case SDLK_BACKSPACE:
+				while (current!=NULL&&current->box!=CONTROLS){
+					if (current->box == ANSWER && current->index > maxIndex) maxIndex = current->index;
+					current = current->next;
+				}
+					
+				current = *letters;
+				while (current != NULL){
+					if (current->box == ANSWER && current->index == maxIndex){
+						current->toX = nextBlankPosition(SHUFFLE, &current->index);
+						current->toY = SHUFFLE_BOX_Y;
+						current->box = SHUFFLE;
+						Mix_PlayChannel(-1, getSound("click-answer"), 0);
+
+						break;
+					}
+					current=current->next;
+				}
+				
+				break;
+				
 			case SDLK_RETURN:
 				/* enter has been pressed */
 				checkGuess(answer, head);
 				break;
+				
 			case ' ':
 				/* shuffle has been pressed */
 				shuffleRemaining = 1;

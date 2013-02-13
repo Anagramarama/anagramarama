@@ -20,8 +20,8 @@ Contact Details: colm@coralquest.com
 		 12 Weston Terrace, West Kilbride, KA23 9JX.  Scotland.
 */
 
-#define LETTER_FAST 15
-#define LETTER_SLOW 1
+#define LETTER_FAST 30
+#define LETTER_SLOW 10
 #define GAME_LETTER_HEIGHT 90
 #define GAME_LETTER_WIDTH  80
 #define GAME_LETTER_SPACE 2
