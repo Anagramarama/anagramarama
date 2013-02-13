@@ -30,7 +30,7 @@
  * Shard           : BEOS Port and bugfixes
  * Adolfo          : Bugfix for Linux Red-Hat version 7.3
  * Pat Thoyts      : C code cleanup, memory leak and cpu usage fixes
- *
+ * Michele Bucelli : Italian translation
  *
  * -------------------------------------------------------------------
  * version		who		changes
