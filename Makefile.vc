@@ -7,7 +7,7 @@
 # $Id$
 #-------------------------------------------------------------------------
 
-VERSION=0.4
+VERSION=0.5
 
 # You should set SDLDIR to the directory containing your SDL include
 # and lib directories.

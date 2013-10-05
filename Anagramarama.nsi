@@ -29,7 +29,7 @@
 !include "LangFile.nsh"
 
 !define AG_RELEASE_MAJOR 0
-!define AG_RELEASE_MINOR 4
+!define AG_RELEASE_MINOR 5
 !define AG_RELEASE_PATCH 0
 
 Name "Anagramarama"
