@@ -72,7 +72,7 @@ VIAddVersionKey FileDescription "Anagramarama Installer"
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_TEXT $(DESC_FinishPageText)
 !insertmacro MUI_PAGE_FINISH
-  
+
 !insertmacro MUI_UNPAGE_WELCOME
 !insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
@@ -82,6 +82,7 @@ VIAddVersionKey FileDescription "Anagramarama Installer"
 ;; Specify languages supported
 !insertmacro MUI_LANGUAGE "English"
 !insertmacro MUI_LANGUAGE "French"
+!insertmacro MUI_LANGUAGE "Italian"
 ;;!insertmacro MUI_LANGUAGE "PortugueseBR"
 
 !insertmacro MUI_RESERVEFILE_LANGDLL
@@ -100,13 +101,22 @@ LangString DESC_SecMain ${LANG_ENGLISH}  "Install program files and English reso
 LangString DESC_SecMenu ${LANG_ENGLISH}  "Create Start menu items."
 LangString DESC_FinishPageText ${LANG_ENGLISH} "Successfully installed Anagramarama."
 LangString DESC_SecLangFr ${LANG_ENGLISH} "Include French language support."
+LangString DESC_SecLangIt ${LANG_ENGLISH} "Include Italian language support."
 LangString DESC_SecLangPtBr ${LANG_ENGLISH} "Include Brazilian language support."
 ;; French -------
 LangString DESC_SecMain ${LANG_FRENCH}  "Les fichiers programme d'installation et de ressources en Anglais (obligatoire)."
 LangString DESC_SecMenu ${LANG_FRENCH}  "Créer des éléments du menu Démarrer."
 LangString DESC_FinishPageText ${LANG_FRENCH} "Installé avec succès Anagramarama."
 LangString DESC_SecLangFr ${LANG_FRENCH} "Inclure le soutien de langue Française."
+LangString DESC_SecLangIt ${LANG_FRENCH} "Inclure le soutien de langue Italienne."
 LangString DESC_SecLangPtBr ${LANG_FRENCH} "Inclure le soutien de langue Brésilienne."
+;; Italian ------
+LangString DESC_SecMain ${LANG_ITALIAN}  "Install program files and English resources (required)."
+LangString DESC_SecMenu ${LANG_ITALIAN}  "Create Start menu items."
+LangString DESC_FinishPageText ${LANG_ITALIAN} "Successfully installed Anagramarama."
+LangString DESC_SecLangFr ${LANG_ITALIAN} "Include French language support."
+LangString DESC_SecLangIt ${LANG_ITALIAN} "Include Italian language support."
+LangString DESC_SecLangPtBr ${LANG_ITALIAN} "Include Brazilian language support."
 
 
 ;; -------------------------------------------------------------------------
@@ -141,11 +151,15 @@ Section /o "French" SecLangFr
     File /r "i18n\fr"
 SectionEnd
 
+Section /o "Italian" SecLangIt
+    SetOutPath "$INSTDIR\i18n"
+    File /r "i18n\it"
+SectionEnd
+
 Section /o "Brazilian" SecLangPtBr
     SetOutPath "$INSTDIR\i18n"
     File /r "i18n\pt_BR"
 SectionEnd
-
 
 ;; -------------------------------------------------------------------------
 ;; Uninstaller Section
@@ -156,7 +170,7 @@ Section "Uninstall"
     DeleteRegKey HKLM "${UninstallRegistryKey}"
     DeleteRegKey HKLM SOFTWARE\Anagramarama
 SectionEnd
- 
+
 ;; -------------------------------------------------------------------------
 ;; Assign language strings to sections
 
@@ -164,6 +178,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SecMain}   $(DESC_SecMain)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecMenu}   $(DESC_SecMenu)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecLangFr} $(DESC_SecLangFr)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecLangIt} $(DESC_SecLangIt)
   !insertmacro MUI_DESCRIPTION_TEXT ${SecLangPtBr} $(DESC_SecLangPtBr)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
@@ -174,4 +189,3 @@ Function .onInit
   ;; Language selection.
   ;;!insertmacro MUI_LANGDLL_DISPLAY
 FunctionEnd
-
